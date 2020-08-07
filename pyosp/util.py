@@ -87,25 +87,5 @@ def progressBar(current, total, width=25):
 
     sys.stdout.write(text)
     sys.stdout.flush()  
- 
-def geo_slope(point, raster, cell_size):
-    geoTransform = raster.GetGeoTransform()
-    px = int((point[0] - geoTransform[0]) / geoTransform[1])
-    py = int((geoTransform[3] - point[1]) / -geoTransform[5])
-    
-    rasterMatrix = raster.ReadAsArray()
-    #pad to the edge
-    rasterPad = np.pad(rasterMatrix, (1,), 'edge')  
-    window = rasterPad[py:py+3, px:px+3]
-    
-    rise = ((window[0,2] + 2*window[1,2] + window[2,2]) -
-            (window[0,0] + 2*window[1,0] + window[2,0])) / \
-           (8 * cell_size)
-    run =  ((window[2,0] + 2*window[2,1] + window[2,2]) -
-            (window[0,0] + 2*window[0,1] + window[0,2])) / \
-           (8 * cell_size)
-    dist = np.sqrt(np.square(rise) + np.square(run))
-    
-    return np.arctan(dist)*180 / np.pi
-    
+   
     
