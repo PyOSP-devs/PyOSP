@@ -3,6 +3,7 @@
 """The setup script."""
 
 from setuptools import setup, find_packages
+import pyosp
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -18,10 +19,10 @@ test_requirements = [ ]
 
 setup(
     author="Yichuan Zhu",
-    author_email='yichuanzhu.yz@gmail.com',
-    python_requires='>=3.5',
+    author_email='yichuan211@gmail.com',
+    python_requires='>=3',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
@@ -31,23 +32,17 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    description="Smart swath river profile",
-    entry_points={
-        'console_scripts': [
-            'swathriver=swathriver.cli:main',
-        ],
-    },
+    description="An Python Library for Objective-Oriented Swath Profile Analysis",
+    version=pyosp.__version__,
     install_requires=requirements,
     license="Apache Software License 2.0",
-    long_description=readme + '\n\n' + history,
+    long_description=read('README.rst'),
     include_package_data=True,
-    keywords='swathriver',
-    name='swathriver',
-    packages=find_packages(include=['swathriver', 'swathriver.*']),
+    keywords='pyosp',
+    name='pyosp',
+    packages=find_packages(include=['pyosp', 'pyosp.*']),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/yichuanzhu/swathriver',
-    version='0.1.0',
-    zip_safe=False,
+    url='https://github.com/yzh211/PyOSP.git',
 )
