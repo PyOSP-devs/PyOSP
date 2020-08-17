@@ -6,16 +6,17 @@ from shapely.geometry import Polygon, LineString, MultiLineString
 import numpy as np
 import matplotlib.pyplot as plt
 from .._elevation import Point_elevation
+from ..util import read_shape
 
 class Base_cir():
     def __init__(self, center, raster, radius,
                  ng_start=None, ng_end=None,
-                 ng_stepsize=None, radial_stepsize=None):
+                 ng_stepsize=1, radial_stepsize=None):
         # Empty swath profile is line or raster is None
         if center is None or raster is None:
             return
         else:
-            self.center = center
+            self.center = read_shape(center)
             self.raster = gdal.Open(raster)
             
         self.radius = radius
@@ -47,9 +48,7 @@ class Base_cir():
         
         # Using cell size if radial_stepsize is None
         if radial_stepsize is None:
-            file = gdal.Open(raster)
-            cell_x = file.GetGeoTransform()[1]
-            self.radial_stepsize = cell_x
+            self.radial_stepsize = geoTransform[1]
         else:
             self.radial_stepsize = radial_stepsize
                 
@@ -58,8 +57,11 @@ class Base_cir():
         self.distance = np.arange(0., self.radius+1e-10,
                                   self.radial_stepsize)
         self.lines = self._radial_lines()
-        self.dat = self.swath_data()
-        self.dat_steps = max(len(x) for x in self.lines)
+        if self.lines == None:
+            return
+        else:
+            self.dat_steps = max(len(x) for x in self.lines)
+            self.dat = self.swath_data()
                
     def _radial_lines(self):
         """
@@ -84,8 +86,6 @@ class Base_cir():
         return MultiLineString(lines)
     
     def swath_data(self):
-        max_len = max(len(x) for x in self.lines)
-        
         lines_dat = []
         for line in self.lines:
             points_temp = []
@@ -94,9 +94,9 @@ class Base_cir():
                 points_temp.append(rasterVal)
             
             line_temp = np.append(points_temp,
-                                  np.repeat(np.nan, max_len-len(points_temp)))
+                                  np.repeat(np.nan, self.dat_steps-len(points_temp)))
             lines_dat.append(line_temp)
-                
+
         return lines_dat
     
     def profile_stat(self):

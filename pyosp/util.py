@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-# import gdal
+__all__ = ["pairwise", "grouped", "read_shape", "point_coords",
+           "write_polygon", "write_polylines", "progressBar"]
+
 import ogr
 import json
 import itertools
 from shapely.geometry import shape
-import numpy as np
 import sys
+
 
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."

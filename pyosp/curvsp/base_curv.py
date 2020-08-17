@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from .._elevation import Point_elevation
 from .._slope import Geo_slope
 from .._tpi import Tpi
+from ..util import read_shape
 import copy
 
 class Base_curv():
@@ -16,7 +17,7 @@ class Base_curv():
         if None in (line, raster, width):
             return
         else:
-            self.line = line
+            self.line = read_shape(line)
             self.raster = gdal.Open(raster)
             self.width = width
             
@@ -30,15 +31,14 @@ class Base_curv():
         self.rasterYmin = geoTransform[3] + geoTransform[5]*(rows-1)
         
         # Using raster resolution if line_stepsize is None
-        file = gdal.Open(raster)
-        self.cell_res = file.GetGeoTransform()[1]
+        self.cell_res = geoTransform[1]
         
         if line_stepsize is None:
             self.line_stepsize = self.cell_res
-            self.line_p = self._line_points(line, self.cell_res)
+            self.line_p = self._line_points(self.cell_res)
         else:
             self.line_stepsize = line_stepsize
-            self.line_p = self._line_points(line, line_stepsize)
+            self.line_p = self._line_points(line_stepsize)
         
         # Using raster resolution if cross_stepsize is None
         if cross_stepsize is None:
@@ -47,15 +47,15 @@ class Base_curv():
             self.cross_stepsize = cross_stepsize
         
         # swath data
-        self.distance = np.arange(0., line.length+0.0001, self.line_stepsize)
+        self.distance = np.arange(0., self.line.length+1e-10, self.line_stepsize)
         self.lines = self._transect_lines()
         self.dat = self.swath_data()
-           
-    def _line_points(self, line, line_stepsize):
-        nPoints = int(line.length // line_stepsize)
+     
+    def _line_points(self, line_stepsize):
+        nPoints = int(self.line.length // line_stepsize)
         coords = []
         for i in range(nPoints+1):
-            p = tuple(line.interpolate(line_stepsize*i, normalized=False).coords)
+            p = tuple(self.line.interpolate(line_stepsize*i, normalized=False).coords)
             coords.append(p[0])
             
         return coords
@@ -67,7 +67,7 @@ class Base_curv():
         pass    
     
     def _segment(self, start=None, end=None):
-        if start is not None and len(start) == 1:
+        if start is not None and isinstance(start, (int, float)):
             start_ind = np.abs(self.distance - start).argmin()
         elif start is not None and len(start) == 2:
             line_coords = np.asarray(self.line_p)
@@ -77,7 +77,7 @@ class Base_curv():
         else:
             start_ind=start
                     
-        if end is not None and len(end) == 1:
+        if end is not None and isinstance(start, (int, float)):
             end_ind = np.abs(self.distance - end).argmin()
         elif end is not None and len(end) == 2:
             line_coords = np.asarray(self.line_p)
@@ -91,23 +91,25 @@ class Base_curv():
     
     def out_polygon(self, start=None, end=None):
         start_ind, end_ind = self._segment(start, end)
+        line_segment = self.lines[start_ind:end_ind]
             
         try:
-            l_points = [x[0] for x in self.lines[start_ind:end_ind]]
-            r_points = [x[-1] for x in self.lines[end_ind:start_ind:-1]]
+            l_points = [x[0] for x in line_segment]
+            r_points = [x[-1] for x in line_segment[::-1]]
         except IndexError:
             raise Exception("Empty swath profile, please try reset arguments.")
         
         coords = np.vstack((l_points, r_points))
-        poly = Polygon(coords).buffer(0)
+        poly = Polygon(coords)
         return poly
     
     def out_polylines(self, start=None, end=None):
         start_ind, end_ind = self._segment(start, end)
+        line_segment = self.lines[start_ind:end_ind]
         
         try:
-             l_points = [x[0] for x in self.lines[start_ind:end_ind]]
-             r_points = [x[-1] for x in self.lines[end_ind:start_ind:-1]]
+             l_points = [x[0] for x in line_segment]
+             r_points = [x[-1] for x in line_segment[::-1]]
         except IndexError:
             raise Exception("Empty swath profile, please try reset arguments.")
         
@@ -117,13 +119,16 @@ class Base_curv():
     
     def swath_data(self):
         lines_dat = []
-        for line in self.lines:
-            points_temp = []
-            for point in line:
-                rasterVal = Point_elevation(point, self.raster).value[0,0]
-                points_temp.append(rasterVal)
-                
-            lines_dat.append(points_temp)
+        try:
+            for line in self.lines:
+                points_temp = []
+                for point in line:
+                    rasterVal = Point_elevation(point, self.raster).value[0,0]
+                    points_temp.append(rasterVal)
+                    
+                lines_dat.append(points_temp)
+        except TypeError:
+            pass
             
         return lines_dat
     
@@ -249,7 +254,7 @@ class Base_curv():
     
     def cross_plot(self, start=None, end=None, ax=None, color='navy'):
         # start_ind, end_ind = self._segment(start, end)
-        dat = self.cross_dat(start, end)
+        dat = self.cross_dat(start=start, end=end)
         
         distance = dat['distance']
         cross = dat['cross_matrix']

@@ -92,6 +92,7 @@ ENV/
 
 # IDE settings
 .vscode/
+*.pylint.d
 
 # paper
 paper/

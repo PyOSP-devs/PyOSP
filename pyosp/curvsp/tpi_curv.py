@@ -60,9 +60,17 @@ class Tpi_curv(Base_curv):
         transect_temp = [p_m]
         slope = -(p2[0]-p1[0])/(p2[1]-p1[1])
         for i in range(1,sys.maxsize,1):
-            dx = np.sqrt(self.cross_stepsize**2 / (slope**2+1)) * i
-            dy = dx * slope
-            p_left = [p_m[0]-dx, p_m[1]-dy]
+            dx = np.sqrt((self.cross_stepsize*i)**2 / (slope**2+1))
+            dy = dx * abs(slope)
+            
+            if slope >= 0 and p2[0] < p1[0] and p2[1] >= p1[1]:
+                p_left = [p_m[0]-dx, p_m[1]-dy]
+            elif slope >= 0 and p2[0] >= p1[0] and p2[1] < p1[1]:
+                p_left = [p_m[0]+dx, p_m[1]+dy]
+            elif slope < 0 and p2[0] < p1[0] and p2[1] < p1[1]:
+                p_left = [p_m[0]+dx, p_m[1]-dy]
+            elif slope < 0 and p2[0] >= p1[0] and p2[1] >= p1[1]:
+                p_left = [p_m[0]-dx, p_m[1]+dy]
             
             # discard point out of bounds
             if not (
@@ -95,10 +103,18 @@ class Tpi_curv(Base_curv):
         
         transect_temp = []
         slope = -(p2[0]-p1[0])/(p2[1]-p1[1])
-        for i in range(1,int(1e6),1):
-            dx = np.sqrt(self.cross_stepsize**2 / (slope**2+1)) * i
-            dy = dx * slope
-            p_right = [p_m[0]+dx, p_m[1]+dy]
+        for i in range(1,sys.maxsize,1):
+            dx = np.sqrt((self.cross_stepsize*i)**2 / (slope**2+1))
+            dy = dx * abs(slope)
+            
+            if slope >= 0 and p2[0] < p1[0] and p2[1] >= p1[1]:
+                p_right = [p_m[0]+dx, p_m[1]+dy]
+            elif slope >= 0 and p2[0] >= p1[0] and p2[1] < p1[1]:
+                p_right = [p_m[0]-dx, p_m[1]-dy]
+            elif slope < 0 and p2[0] < p1[0] and p2[1] < p1[1]:
+                p_right = [p_m[0]-dx, p_m[1]+dy]
+            elif slope < 0 and p2[0] >= p1[0] and p2[1] >= p1[1]:
+                p_right = [p_m[0]+dx, p_m[1]-dy]
             
             # discard point out of bounds
             if not (

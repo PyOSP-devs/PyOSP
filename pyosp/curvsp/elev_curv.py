@@ -62,9 +62,17 @@ class Elev_curv(Base_curv):
         # nPoints = int(self.width // self.cross_stepsize)
         slope = -(p2[0]-p1[0])/(p2[1]-p1[1])
         for i in range(1,sys.maxsize,1):
-            dx = np.sqrt(self.cross_stepsize**2 / (slope**2+1)) * i
-            dy = dx * slope
-            p_left = [p_m[0]-dx, p_m[1]-dy]
+            dx = np.sqrt((self.cross_stepsize*i)**2 / (slope**2+1))
+            dy = dx * abs(slope)
+            
+            if slope >= 0 and p2[0] < p1[0] and p2[1] >= p1[1]:
+                p_left = [p_m[0]-dx, p_m[1]-dy]
+            elif slope >= 0 and p2[0] >= p1[0] and p2[1] < p1[1]:
+                p_left = [p_m[0]+dx, p_m[1]+dy]
+            elif slope < 0 and p2[0] < p1[0] and p2[1] < p1[1]:
+                p_left = [p_m[0]+dx, p_m[1]-dy]
+            elif slope < 0 and p2[0] >= p1[0] and p2[1] >= p1[1]:
+                p_left = [p_m[0]-dx, p_m[1]+dy]
             
             # discard point out of bounds
             if not (
@@ -100,9 +108,17 @@ class Elev_curv(Base_curv):
         # nPoints = int(self.width // self.cross_stepsize)
         slope = -(p2[0]-p1[0])/(p2[1]-p1[1])
         for i in range(1,sys.maxsize,1):
-            dx = np.sqrt(self.cross_stepsize**2 / (slope**2+1)) * i
-            dy = dx * slope
-            p_right = [p_m[0]+dx, p_m[1]+dy]
+            dx = np.sqrt((self.cross_stepsize*i)**2 / (slope**2+1))
+            dy = dx * abs(slope)
+            
+            if slope >= 0 and p2[0] < p1[0] and p2[1] >= p1[1]:
+                p_right = [p_m[0]+dx, p_m[1]+dy]
+            elif slope >= 0 and p2[0] >= p1[0] and p2[1] < p1[1]:
+                p_right = [p_m[0]-dx, p_m[1]-dy]
+            elif slope < 0 and p2[0] < p1[0] and p2[1] < p1[1]:
+                p_right = [p_m[0]-dx, p_m[1]+dy]
+            elif slope < 0 and p2[0] >= p1[0] and p2[1] >= p1[1]:
+                p_right = [p_m[0]+dx, p_m[1]-dy]
             
             # discard point out of bounds
             if not (
