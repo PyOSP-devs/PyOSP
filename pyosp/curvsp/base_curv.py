@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import gdal
-from shapely.geometry import Polygon, MultiLineString
+from shapely.geometry import Polygon, MultiLineString, Point
 import numpy as np
 import matplotlib.pyplot as plt
 from .._elevation import Point_elevation
@@ -162,12 +162,31 @@ class Base_curv():
         # ax.grid()
         plt.tight_layout()
             
-    def profile_plot(self, start=None, end=None, ax=None, color='navy'):
+    def profile_plot(self, start=None, end=None, ax=None, color='navy',
+                     p_coords=None, p_marker="o", p_size=1,
+                     p_color="C3", p_label=None):
         distance = self.distance
         stat = self.profile_stat(self.dat)
         
+        if ax is None:
+            fig, ax = plt.subplots()
+            
         self.plot(distance, stat, start, end, ax, color)
         
+        if p_coords is not None:
+            line_coords = np.array(self.line_p)
+            dist_array = np.empty(0)
+            elev_array = np.empty(0)
+            for p in p_coords:
+                point = Point(p)
+                dist = self.line.project(point)
+                elev = Point_elevation(p, self.raster).value
+                dist_array = np.append(dist_array, dist)
+                elev_array = np.append(elev_array, elev)
+                
+            ax.scatter(dist_array, elev_array,
+                       s=p_size, marker=p_marker, color=p_color, label=p_label)        
+                
     def slice_plot(self, loc, ax=None, label=None):
         if not min(self.distance) <= loc <= max(self.distance):
             raise ValueError("Slice location should within the range of swath profile")

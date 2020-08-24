@@ -11,8 +11,7 @@ class Tpi():
         
         # change nodata to nan, assuming a small value was given 
         self.rasterMatrix = self.raster.ReadAsArray()
-        if self.rasterMatrix[self.rasterMatrix < -1e10]:
-            self.rasterMatrix[self.rasterMatrix < -1e10] = np.nan
+        self.rasterMatrix[self.rasterMatrix < -1e10] = np.nan
         
     def point_position(self):
         x = int((self.p[0] - self.geoTransform[0]) / self.geoTransform[1])
