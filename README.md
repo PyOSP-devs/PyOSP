@@ -21,13 +21,13 @@ _Intelligent and comprehensive swath analysis_
 - :anchor: **Dependencies**: Only NumPy, Matplotlib, GDAL and Shapely.
 
 ## Installation
-We recommend to use the [conda](https://conda.io/en/latest/) package manager to install PyOSP. This will provide pre-built binaries for all dependencies of PyOSP. If you have the [Anaconda distribution](https://www.anaconda.com/) (a Python distribution with many installed libraries for data science), or [miniconda](https://docs.conda.io/en/latest/miniconda.html) (only containing Python and the conda package manager) installed, then simply run the following command:
+We recommend to use the [conda](https://conda.io/en/latest/) package manager to install PyOSP. It will provide pre-built binaries for all dependencies of PyOSP. If you have the [Anaconda distribution](https://www.anaconda.com/) (a Python distribution with many installed libraries for data science), or [miniconda](https://docs.conda.io/en/latest/miniconda.html) (only containing Python and the conda package manager) installed, then simply execute the following command:
 
 ```bash
 conda install --channel conda-forge pyosp 
 ```
 
-After installation, you can verify by entering a Python shell and typing:
+You can verify installation by entering a Python shell and typing:
 
 ```python
 import pyosp
