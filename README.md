@@ -56,15 +56,15 @@ tpi_polygon = "/tests/data/tpi_polygon.shp"
 orig = pyosp.Orig_curv(line, raster, width=100,
                        line_stepsize=3, cross_stepsize=None)
 
-elev = pyosp.Elev_curv(lineshape, raster, width=100,
+elev = pyosp.Elev_curv(line, raster, width=100,
                        min_elev=0.01,
                        line_stepsize=3, cross_stepsize=None)
 
-slope = pyosp.Slope_curv(lineshape, raster, width=100,
+slope = pyosp.Slope_curv(line, raster, width=100,
                          min_slope=1,
                          line_stepsize=3, cross_stepsize=None)
 
-tpi = pyosp.Tpi_curv(lineshape, raster, width=100,
+tpi = pyosp.Tpi_curv(line, raster, width=100,
                      tpi_radius=50, min_tpi=-5,
                      line_stepsize=3, cross_stepsize=None)
                 
