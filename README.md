@@ -16,7 +16,7 @@ _Intelligent and comprehensive swath analysis_
 ## Features
 
 - :gem: **Intelligent**: objectively identify irregular boundries using elevation, slope, TPI, or other raster analyses.
-- :milky_way: **Comprehensive**: cuvilinear and circular swath analysis, reclassification of swath data, cross-swath, slice and histogram, etc.  
+- :milky_way: **Comprehensive**: cuvilinear and circular swath analyses, reclassification of swath data, cross-swath, slice and histogram, etc.  
 - :two_women_holding_hands: **Compatible**: work seamlessly with GIS software.
 - :anchor: **Dependencies**: Only NumPy, Matplotlib, GDAL and Shapely.
 
@@ -33,3 +33,60 @@ After installation, you can verify by entering a Python shell and typing:
 import pyosp
 print(pyosp.__version__)
 ```
+
+## Example
+Here is a simple example of using PyOSP to perform swath analysis on a synthetic mountain case. The cross-width of mountain is around 90m, and only mountainous area possess non-zero elevations. 
+
+<img alt="homo_case" src="https://i.imgur.com/nSFSqxo.png" height="200"/></p>
+
+Original, elevation, slope and TPI based swath polygons.
+
+```python
+import pyosp
+import matplotlib.pyplot as plt
+
+line = "/tests/data/homo_baseline.shp"
+raster = "/tests/data/homo_stripe.tif"
+
+orig_polygon = "/tests/data/orig_polygon.shp"
+elev_polygon = "/tests/data/elev_polygon.shp"
+slope_polygon = "/tests/data/slope_polygon.shp"
+tpi_polygon = "/tests/data/tpi_polygon.shp"
+
+orig = pyosp.Orig_curv(line, raster, width=100,
+                       line_stepsize=3, cross_stepsize=None)
+
+elev = pyosp.Elev_curv(lineshape, raster, width=100,
+                       min_elev=0.01,
+                       line_stepsize=3, cross_stepsize=None)
+
+slope = pyosp.Slope_curv(lineshape, raster, width=100,
+                         min_slope=1,
+                         line_stepsize=3, cross_stepsize=None)
+
+tpi = pyosp.Tpi_curv(lineshape, raster, width=100,
+                     tpi_radius=50, min_tpi=-5,
+                     line_stepsize=3, cross_stepsize=None)
+                
+pyosp.write_polygon(orig.out_polygon(), orig_polygon)
+pyosp.write_polygon(elev.out_polygon(), elev_polygon)
+pyosp.write_polygon(slope.out_polygon(), slope_polygon)
+pyosp.write_polygon(tpi.out_polygon(), tpi_polygon)
+```
+
+Open in GIS software.
+
+<img alt="homo_polygon" src="https://i.imgur.com/nLgQEsJ.jpg" height="200"/></p>
+
+Plot, for example, elevation based swath profile.
+
+```python
+elev.profile_plot()
+```
+
+<img alt="elev_SP" src="https://i.imgur.com/0taXAhF.jpg.jpg" height="200"/></p>
+
+More example and usage please check example gallery and documentation.
+
+## Citing PyOSP
+
