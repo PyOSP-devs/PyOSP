@@ -9,7 +9,7 @@
 </p>
 
 ---
-<img alt="PyOSP Logo" src="https://i.imgur.com/SVz9LbZ.gif" height="250" /></p>
+<img alt="intro" src="https://i.imgur.com/cC6HKJv.gif" height="300"/></p>
 
     
 
