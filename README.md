@@ -74,7 +74,7 @@ pyosp.write_polygon(slope.out_polygon(), slope_polygon)
 pyosp.write_polygon(tpi.out_polygon(), tpi_polygon)
 ```
 
-Open in GIS software.
+You can plot with matplotlib, or open in GIS software.
 
 <img alt="homo_polygon" src="https://i.imgur.com/nLgQEsJ.jpg" height="200"/></p>
 
