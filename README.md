@@ -9,7 +9,6 @@
 </p>
 
 ---
-<img alt="intro" src="https://i.imgur.com/cC6HKJv.gif" height="300"/></p>
+<img alt="intro" src="https://i.imgur.com/7jkyyog.gif" height="300"/></p>
 
-    
 
