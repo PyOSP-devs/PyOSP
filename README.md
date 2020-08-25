@@ -86,7 +86,28 @@ elev.profile_plot()
 
 <img alt="elev_SP" src="https://i.imgur.com/0taXAhF.jpg.jpg" height="200"/></p>
 
-More example and usage please check example gallery and documentation.
+_For more example and usage, please refer to our publication, example gallery and documentation._
 
 ## Citing PyOSP
 
+## Contributing
+
+Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## Feedback
+
+- If you think PyOSP is useful, consider giving it a start.
+- If something is not working, [create an issue](https://github.com/PyOSP-devs/PyOSP/issues/new)
+- If you need to get in touch for other reasons, [send us an email](yichuan211@gmail.com)
+
+## Credits
+This work is supported by [Kentucky Geological Survey](https://www.uky.edu/KGS/).
+
+## License
+[Apache License, Version 2.0](https://github.com/PyOSP-devs/PyOSP/blob/master/LICENSE)
