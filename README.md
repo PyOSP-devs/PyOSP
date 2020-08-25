@@ -7,5 +7,9 @@
     <img alt="Publication" src="https://img.shields.io/badge/Publication-Geomorphology-blue?style=flat-square"></a>
   </p>
 </p>
+
+---
+<img alt="PyOSP Logo" src="https://i.imgur.com/SVz9LbZ.gif" height="250" /></p>
+
     
 
