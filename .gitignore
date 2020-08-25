@@ -98,6 +98,7 @@ ENV/
 paper/
 
 # example and test
+intro/
 example/
 backup/
 

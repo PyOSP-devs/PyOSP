@@ -100,7 +100,7 @@ class Base_curv():
             raise Exception("Empty swath profile, please try reset arguments.")
         
         coords = np.vstack((l_points, r_points))
-        poly = Polygon(coords)
+        poly = Polygon(coords).buffer(0.01)
         return poly
     
     def out_polylines(self, start=None, end=None):
