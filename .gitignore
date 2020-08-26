@@ -101,6 +101,7 @@ paper/
 intro/
 example/
 backup/
+*.recipe/
 
 # bak file
 *.bak
