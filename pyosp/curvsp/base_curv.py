@@ -3,7 +3,7 @@
 import gdal
 from shapely.geometry import Polygon, MultiLineString, Point
 import numpy as np
-from scipy.stats import gaussian_kde
+# from scipy.stats import gaussian_kde
 from matplotlib.colors import Normalize
 from matplotlib import cm
 import matplotlib.pyplot as plt
