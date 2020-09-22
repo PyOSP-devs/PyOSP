@@ -1,0 +1,11 @@
+name: pyosp
+
+channels:
+  - conda-forge
+
+dependencies:
+  - numpy >=1.19*
+  - matplotlib >=3.3*
+  - gdal >=2.3*
+  - shapely >=1.6*
+  - pytest >=6
