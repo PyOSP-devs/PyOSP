@@ -1,7 +1,7 @@
 PyOSP
 =====
 
-PyOSP (Python Object-oriented Swath Profile) is an intelligent swath tool for characterize complex 
+PyOSP (Python Object-oriented Swath Profile) is an intelligent swath tool that can characterize complex 
 topographic features. Unlike traditional swath methods have been limited to rectangular or simplified
 curvilinear sampling blocks, PyOSP can objectively characterize complex geomorphic boundaries using
 elevation, slope angle, topographic position index (TPI), or other raster calculations by intelligently
@@ -15,8 +15,8 @@ PyOSP supports Python 3.0 or higher, and depends on `Numpy <https://numpy.org/>`
    :caption: Getting Started
 
    Installation <user_guide/installation>
-   Traditional curvilinear swath analysis <user_guide/fixed_curv>
-   Traditional circular swath analysis <user_guide/fixed_cir>
+   Traditional curvilinear swath analysis <notebooks/fix_width_curv>
+   Traditional circular swath analysis <notebooks/fix_radius_cir>
 
 Indices and tables
 ==================
