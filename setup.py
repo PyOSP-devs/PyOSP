@@ -10,9 +10,9 @@ with open('README.md') as readme_file:
     readme = readme_file.read()
 
 DISTNAME = "pyosp"
-DESCRIPTION = "An Python Library for Objective-Oriented Swath Profile Analysis"
+DESCRIPTION = "An Python Library fori Object-oriented Swath Profile Analysis"
 AUTHOR = "Yichuan Zhu, Matthew A. Massey, Jason Dortch"
-AUTHOR_EMAIL = "yichuan.zhu@uky.edu"
+AUTHOR_EMAIL = "yichuan211@gmail.com"
 URL = "https://github.com/PyOSP-devs/PyOSP.git"
 LICENSE = "Apache License, Version 2.0"
 

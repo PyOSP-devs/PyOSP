@@ -9,3 +9,4 @@ from ._elevation import *
 from ._slope import *
 from ._tpi import *
 
+import pyosp.datasets
