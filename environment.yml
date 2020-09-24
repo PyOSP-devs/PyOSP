@@ -10,3 +10,4 @@ dependencies:
   - shapely >=1.6*
   - pytest >=6
   - nbsphinx
+  - ipython
