@@ -10,7 +10,4 @@ dependencies:
   - shapely >=1.6*
   - pytest >=6
   - pandoc
-  - ipykernel
-  - pip
-  - pip:
-    - nbsphinx
+  - ipython
