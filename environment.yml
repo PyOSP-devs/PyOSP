@@ -9,5 +9,6 @@ dependencies:
   - gdal >=2.3*
   - shapely >=1.6*
   - pytest >=6
+  - nbsphinx
   - pandoc
   - ipython
