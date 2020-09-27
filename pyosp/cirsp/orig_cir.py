@@ -32,7 +32,10 @@ class Orig_cir(Base_cir):
         super(Orig_cir,self).__init__(center, raster, radius,
                                       ng_start, ng_end,
                                       ng_stepsize, radial_stepsize)
-            
+
+    def __repr__(self):
+        return("{}".format(self.__class__.__name__))
+
     def _radial_lines(self):
         num = (self.ng_end - self.ng_start) // self.ng_stepsize
         sector = list(np.arange(self.ng_start, self.ng_end+0.00001,

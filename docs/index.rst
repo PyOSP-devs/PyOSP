@@ -17,6 +17,7 @@ PyOSP supports Python 3.0 or higher, and depends on `Numpy <https://numpy.org/>`
    Installation <user_guide/installation>
    Traditional curvilinear swath analysis <notebooks/fix_width_curv>
    Traditional circular swath analysis <notebooks/fix_radius_cir>
+   Object-oriented swath analysis <notebooks/object_homo>
 
 Indices and tables
 ==================
