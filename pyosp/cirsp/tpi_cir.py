@@ -63,7 +63,7 @@ class Tpi_cir(Base_cir):
                 p = [self.center.x+dx, self.center.y+dy]
                 
                 p_elev = Point_elevation(p, self.raster).value
-                p_tpi= Tpi(p, self.raster, self.tpi_radius).index
+                p_tpi= Tpi(p, self.raster, self.tpi_radius).value
 
                 if not (
                 (self.rasterXmin <= p[0] <= self.rasterXmax) and 

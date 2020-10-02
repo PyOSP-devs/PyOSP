@@ -15,42 +15,30 @@ class Tpi():
         """
         self.p = point_coord
         self.raster = raster
-        self.geoTransform = self.raster.GetGeoTransform()
-        self.radius = int(radius / self.geoTransform[1])
-        
-        # change nodata to nan, assuming a small value was given 
-        self.rasterMatrix = self.raster.ReadAsArray()
-        if not np.min(self.rasterMatrix) > -1e10:
-            self.rasterMatrix[self.rasterMatrix < -1e10] = np.nan
+        self.cols = raster.RasterXSize
+        self.rows = raster.RasterYSize
+        self.geoTransform = raster.GetGeoTransform()
+        self.radiusInPixel = int(radius / self.geoTransform[1])
         
     def point_position(self):
         x = int((self.p[0] - self.geoTransform[0]) / self.geoTransform[1])
         y = int((self.geoTransform[3] - self.p[1]) / -self.geoTransform[5])
         return y, x
     
-    def raster_window(self):
+    def avg_window(self):
         py, px = self.point_position()
-        
-        #pad nan to range out of raster
-        rasterPad = np.pad(self.rasterMatrix, (self.radius+1,), 
-                           mode='constant', constant_values=(np.nan,))  
-                
-        return rasterPad[py:(py+2*self.radius+1), 
-                         px:(px+2*self.radius+1)]
+        xmin = max(0, px-self.radiusInPixel)
+        xmax = min(self.cols, px+self.radiusInPixel+1)
+        ymin = max(0, py-self.radiusInPixel)
+        ymax = min(self.rows, py+self.radiusInPixel+1)
+        arr = self.raster.ReadAsArray(xoff=xmin, yoff=ymin, xsize=xmax-xmin, ysize=ymax-ymin)
+        avg = (np.nansum(arr)-self.point_value()) / (arr.size-1)
+        return avg 
     
     def point_value(self):
-        return self.rasterMatrix[self.point_position()]
+        py, px =self.point_position()
+        return self.raster.ReadAsArray(xoff=px, yoff=py, xsize=1, ysize=1)[0]
     
     @property
-    def index(self):
-        outer = self.window * self.raster_window()
-        inner = self.point_value()
-        return inner - (np.nansum(outer)/np.count_nonzero(~np.isnan(outer)))
-    
-    @property
-    def window(self):
-        win = np.ones((2*self.radius+1, 2*self.radius+1))
-        r_y, r_x = win.shape[0]//2, win.shape[1]//2
-        win[r_y, r_x] = 0    # remove the central cell
-        return win
-    
+    def value(self):
+        return self.point_value() - self.avg_window() 

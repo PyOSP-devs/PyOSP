@@ -5,6 +5,7 @@ import sys
 from ..util import pairwise, progressBar
 from .._tpi import Tpi
 from .base_curv import Base_curv
+import gdal
 
 class Tpi_curv(Base_curv):
     """TPI-based swath profile characterization.
@@ -29,13 +30,13 @@ class Tpi_curv(Base_curv):
     def __init__(self, line, raster, width, 
                  tpi_radius, min_tpi=float("-inf"), max_tpi=float("inf"),
                  line_stepsize=None, cross_stepsize=None):
-        self.tpi_radius = tpi_radius 
+        self.tpi_radius = tpi_radius
         self.min_tpi = min_tpi
         self.max_tpi = max_tpi
-        
+
         super(Tpi_curv,self).__init__(line, raster, width,
                                       line_stepsize, cross_stepsize)
-        
+
     def __repr__(self):
         return("{}".format(self.__class__.__name__))
 
@@ -104,8 +105,7 @@ class Tpi_curv(Base_curv):
                 if hw >= self.width/2:
                     break
                 
-            p_index = Tpi(p_left, self.raster, self.tpi_radius).index
-            
+            p_index = Tpi(p_left, self.raster, self.tpi_radius).value
             if self.min_tpi <= p_index <= self.max_tpi:
                 transect_temp.insert(0,p_left)
             else:
@@ -148,8 +148,7 @@ class Tpi_curv(Base_curv):
                 if hw >= self.width/2:
                     break
 
-            p_index = Tpi(p_right, self.raster, self.tpi_radius).index                
-            
+            p_index = Tpi(p_right, self.raster, self.tpi_radius).value
             if self.min_tpi <= p_index <= self.max_tpi:
                 transect_temp.append(p_right)
             else:
