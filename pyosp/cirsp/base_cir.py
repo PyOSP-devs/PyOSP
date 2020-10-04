@@ -92,7 +92,7 @@ class Base_cir():
             raise Exception("Empty swath profile, please try reset arguments.")
             
         poly = Polygon(coords)
-        return poly.buffer(0.001)
+        return poly
     
     def out_polylines(self):       
         "Return a shapely polyline object"
@@ -155,9 +155,7 @@ class Base_cir():
         
         return [min_z, max_z, mean_z, q1, q3]
     
-    def profile_plot(self, ax=None, color='navy',
-                     p_coords=None, p_marker="o", p_size=1,
-                     p_color='C3', p_label=None):       
+    def profile_plot(self, ax=None, color='navy', p_coords=None, **kwargs):
         d = np.linspace(0, self.radial_stepsize*self.dat_steps, self.dat_steps,
                         endpoint=True)
         stat = self.profile_stat()
@@ -180,17 +178,15 @@ class Base_cir():
                 dist_array = np.append(dist_array, dist)
                 elev_array = np.append(elev_array, elev)
                 
-            ax.scatter(dist_array, elev_array,
-                s=p_size, marker=p_marker, color=p_color, label=p_label)        
+            ax.scatter(dist_array, elev_array, **kwargs)
 
         ax.set_xlabel("Distance")
         ax.set_ylabel("Elevation")
         ax.legend()
         plt.tight_layout()
-
         return ax
         
-    def slice_plot(self, angle):
+    def slice_plot(self, angle, ax=None):
         """Plot cross-section of swath data.
 
         :param angle: the angle of cross-section wrt horizontal line
@@ -211,13 +207,16 @@ class Base_cir():
             d_temp = np.sqrt((point[0]-points[0][0])**2
                              +(point[1]-points[0][1])**2)
             d.append(d_temp)
+
+        if ax is None:
+            fig, ax = plt.subplots()
         
-        fig, ax = plt.subplots()
         ax.plot(d, values)
         ax.set_xlabel("Distance to center")
         ax.set_ylabel("Elevation")
         ax.grid()
         plt.tight_layout()
+        return ax
         
     def slice_polyline(self, angle):
         """Return the polyline of cross-section
@@ -238,18 +237,21 @@ class Base_cir():
         return LineString(line)
         
         
-    def hist(self, bins=50):
+    def hist(self, bins=50, ax=None):
         "Return a histogram plot"
         dat = np.hstack(self.dat)
-        
-        fig, ax = plt.subplots()
-        ax.hist(dat, bins=bins, histtype='stepfilled', alpha=1, normed=True)
+
+        if ax is None:
+            fig, ax = plt.subplots()
+
+        ax.hist(dat, bins=bins, histtype='stepfilled', alpha=1, density=True)
         ax.set_xlabel("Elevation")
         ax.set_ylabel("PDF")
         ax.grid()
         plt.tight_layout()
+        return ax
         
-    def slice_hist(self, angle, bins=10):
+    def slice_hist(self, angle, bins=10, ax=None):
         """Plot the histogram of slice 
 
         :param angle: angle of cross-section wrt horizontal line
@@ -265,12 +267,15 @@ class Base_cir():
         ng_ind = np.abs(sector - angle).argmin()
         dat = self.dat[ng_ind]
         
-        fig, ax = plt.subplots()
-        ax.hist(dat, bins=bins, histtype='stepfilled', alpha=1, normed=True)
+        if ax is None:
+            fig, ax = plt.subplots()
+
+        ax.hist(dat, bins=bins, histtype='stepfilled', alpha=1, density=True)
         ax.set_xlabel("Elevation")
         ax.set_ylabel("PDF")
         ax.grid()
         plt.tight_layout()
+        return ax
         
         
         

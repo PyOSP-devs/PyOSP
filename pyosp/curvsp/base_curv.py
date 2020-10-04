@@ -3,7 +3,7 @@
 import gdal
 from shapely.geometry import Polygon, MultiLineString, Point
 import numpy as np
-# from scipy.stats import gaussian_kde
+from scipy.interpolate import interpn
 from matplotlib.colors import Normalize
 from matplotlib import cm
 import matplotlib.pyplot as plt
@@ -177,7 +177,8 @@ class Base_curv():
         
         return [min_z, max_z, mean_z, q1, q3]
     
-    def plot(self, distance, stat, start=None, end=None, ax=None, color='navy'):         
+    def plot(self, distance, stat, points=None,
+             start=None, end=None, ax=None, color='navy', **kwargs):         
         """Summary statistics plot.
         """
         start_ind, end_ind = self._segment(start, end)
@@ -192,86 +193,7 @@ class Base_curv():
         ax.fill_between(distance[start_ind:end_ind], stat[3][start_ind:end_ind], 
                         stat[4][start_ind:end_ind], alpha=0.7, facecolor=color,
                         label='q1_q3 relief')
-        
-        ax.set_xlabel("Distance")
-        ax.set_ylabel("Elevation")
-        ax.legend()
-        plt.tight_layout()
-        return ax
-    
-    def density_scatter(self, distance=None, dat=None, bins=20, 
-                        start=None, end=None, ax=None, fig=None, 
-                        s=1, cmap='jet', **kwargs):
-        start_ind, end_ind = self._segment(start, end)
-        distance = list(self.distance[start_ind:end_ind] if distance is None else distance[start_ind:end_ind])
-        dat = self.dat[start_ind:end_ind] if dat is None else dat[start_ind:end_ind] 
 
-        min_z = np.nanmin(np.nanmin(dat))
-        max_z = np.nanmax(np.nanmax(dat))
-        bin_e = np.linspace(min_z, max_z, num=bins, endpoint=True)
-        bin_center = 0.5*(bin_e[1:]+bin_e[:-1])
-
-        # collect all density data 
-        d_ensemble = []
-        for ind, ele in enumerate(dat):
-            # Calculate the point density
-            data, _ = np.histogram(ele, bins=bin_e, density=True)
-            d = np.interp(ele, bin_center, data)
-            d_ensemble.append(d)
-
-        d_max = max([np.nanmax(s) for s in d_ensemble])
-        d_min = min([np.nanmin(s) for s in d_ensemble])
-        if ax is None:
-            fig, ax = plt.subplots()
-
-        for ind, ele in enumerate(d_ensemble):
-            y = np.stack(dat[ind])
-            x = np.repeat(distance[ind], len(y))
-            idx = ele.argsort()
-            y, z = y[idx], ele[idx]
-            ax.scatter(x, y, c=z, s=s, cmap=cmap, vmin=d_min, vmax=d_max, **kwargs)
-            
-        norm = Normalize(vmin=d_min, vmax=d_max)
-        cbar = fig.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax)
-        cbar.ax.set_ylabel('Density')
-        
-        ax.set_xlabel("Distance")
-        ax.set_ylabel("Elevation")
-        plt.tight_layout()
-
-        return ax
-
-    def profile_plot(self, start=None, end=None, ax=None, color='navy',
-                     points=None, p_marker="o", p_size=1,
-                     p_color="C3", p_label=None):
-        """Plot the swath profile.
-
-        :param start: starting position of plot, defaults to starting point of baseline
-        :type start: float or array-like, optional
-        :param end: ending position of plot, defaults to ending point of baseline
-        :type end: float or array-like, optional
-        :param ax: matplotlib axes object, if not will generate one, default None
-        :param color: color shading of percentile, defaults to 'navy'
-        :type color: str, optional
-        :param points: path to points shapefile that are meant to be plotted with SP, defaults to None
-        :type points: str, optional
-        :param p_marker: marker of points, defaults to "o"
-        :type p_marker: str, optional
-        :param p_size: size of points, defaults to 1
-        :type p_size: int, optional
-        :param p_color: color of points, defaults to "C3"
-        :type p_color: str, optional
-        :param p_label: label (legend) of points, defaults to None
-        :type p_label: str, optional
-        """
-        distance = self.distance
-        stat = self.profile_stat(self.dat)
-        
-        if ax is None:
-            fig, ax = plt.subplots()
-            
-        self.plot(distance, stat, start, end, ax, color)
-        
         if points is not None:
             p_coords = point_coords(points)
             dist_array = np.empty(0)
@@ -283,8 +205,73 @@ class Base_curv():
                 dist_array = np.append(dist_array, dist)
                 elev_array = np.append(elev_array, elev)
                 
-            ax.scatter(dist_array, elev_array,
-                       s=p_size, marker=p_marker, color=p_color, label=p_label)        
+            ax.scatter(dist_array, elev_array, **kwargs)
+        
+        ax.set_xlabel("Distance")
+        ax.set_ylabel("Elevation")
+        ax.legend()
+        plt.tight_layout()
+        return ax
+    
+    def density_scatter(self, distance=None, dat=None, bins=10, 
+                        start=None, end=None, ax=None, **kwargs):
+        start_ind, end_ind = self._segment(start, end)
+        distance = list(self.distance[start_ind:end_ind] if distance is None else distance[start_ind:end_ind])
+        dat = self.dat[start_ind:end_ind] if dat is None else dat[start_ind:end_ind] 
+
+        x, y = np.empty(0), np.empty(0) 
+        for ind, dist in enumerate(distance):
+            y_temp = np.stack(dat[ind])
+            y_temp = y_temp[~np.isnan(y_temp)]
+            x_temp = np.repeat(dist, len(y_temp))
+            x = np.append(x, x_temp) 
+            y = np.append(y, y_temp)
+        
+        data, x_e, y_e = np.histogram2d(x, y, bins=bins, density=True)        
+        z = interpn((0.5*(x_e[1:] + x_e[:-1]), 0.5*(y_e[1:]+y_e[:-1])), data, np.vstack([x,y]).T,
+                    method = "linear", bounds_error = False, fill_value=None)
+        
+        # Sort the points by density
+        idx = z.argsort()
+        x, y, z = x[idx], y[idx], z[idx]
+
+        if ax is None:
+            fig, ax = plt.subplots()
+
+        ax.scatter( x, y, c=z, **kwargs )
+
+        norm = Normalize(vmin = np.min(z), vmax = np.max(z))
+        if "cmap" in kwargs:
+            cbar = plt.colorbar(cm.ScalarMappable(norm = norm, cmap=kwargs.get("cmap")), ax=ax)
+        else:
+            cbar = plt.colorbar(cm.ScalarMappable(norm = norm), ax=ax)
+
+        cbar.ax.set_ylabel('Density')
+        ax.set_xlabel("Distance")
+        ax.set_ylabel("Elevation")
+        plt.tight_layout()
+        return ax
+
+    def profile_plot(self, start=None, end=None, ax=None, color='navy',
+                     points=None, **kwargs): 
+        """Plot the swath profile.
+
+        :param start: starting position of plot, defaults to starting point of baseline
+        :type start: float or array-like, optional
+        :param end: ending position of plot, defaults to ending point of baseline
+        :type end: float or array-like, optional
+        :param ax: matplotlib axes object, if not will generate one, default None
+        :param color: color shading of percentile, defaults to 'navy'
+        :type color: str, optional
+        :param points: path to points shapefile that are meant to be plotted with SP, defaults to None
+        :type points: str, optional
+        :param **kwargs: **kwargs pass to Matplotlib scatter handle
+        :type **kwargs: arbitrary, optional
+        """
+        distance = self.distance
+        stat = self.profile_stat(self.dat)
+        self.plot(distance=distance, stat=stat, start=start, end=end,
+                  ax=ax, color=color, points=points, **kwargs)
                 
     def slice_plot(self, loc, ax=None):
         """plot cross-section of swath data.
@@ -316,6 +303,7 @@ class Base_curv():
         ax.set_ylabel("Elevation")
         ax.grid()
         plt.tight_layout()
+        return ax
         
     def hist(self, dat=None, ax=None, bins=50):
         """Return a histogram plot.
@@ -338,6 +326,7 @@ class Base_curv():
         ax.set_ylabel("PDF")
         # ax.grid()
         plt.tight_layout()
+        return ax
        
     def slice_hist(self, loc, bins=50):
         """Plot the histogram of slice.
@@ -403,7 +392,7 @@ class Base_curv():
         return {'distance': distance,
                 'cross_matrix': list(map(list, zip(*cross_profile)))}
     
-    def cross_plot(self, start=None, end=None, ax=None, color='navy'):
+    def cross_plot(self, start=None, end=None, ax=None, color='navy', points=None, **kwargs):
         """Return the plot of cross-profile.
 
         :param start: Starting position of cross-swath, defaults to starting point of baseline
@@ -425,11 +414,12 @@ class Base_curv():
         start = None
         end = None
         
-        self.plot(distance, cross_stat, start, end, ax, color)
+        self.plot(distance=distance, stat=cross_stat, start=start, end=end,
+                  ax=ax, color=color, points=points, **kwargs)
     
     def post_tpi(self, radius, min_val=float("-inf"), max_val=float("inf"),
                  start=None, end=None, ax=None, color='navy',
-                 cross=False, plot=False):
+                 cross=False, swath_plot=False, bins=10, density_scatter=False, **kwargs):
         """Post-processing swath data according to TPI criteria.
 
         :param radius: TPI radius
@@ -452,12 +442,16 @@ class Base_curv():
         :return: a list contain distance and processed elevation data
         :rtype: list
         """
+        if swath_plot and density_scatter:
+            raise Exception("Swath profile and density scatters are not "  
+                            "meant to be plotted at the same time.")
+
         start_ind, end_ind = self._segment(start, end)
         
         lines_val = copy.deepcopy(self.dat[start_ind:end_ind])
         for line_ind, line in enumerate(self.lines[start_ind:end_ind]):
             for point_ind, point in enumerate(line):
-                point_val = Tpi(point, self.raster, radius).index
+                point_val = Tpi(point, self.raster, radius).value
                 if not min_val <= point_val <= max_val:
                     lines_val[line_ind][point_ind] = np.nan
              
@@ -469,15 +463,19 @@ class Base_curv():
            distance = cross_dat['distance']
            values = cross_dat['cross_matrix']
         
-        if plot == True:
+        if swath_plot == True:
             post_stat = self.profile_stat(values)
             self.plot(distance=distance, stat=post_stat, ax=ax, color=color)
+
+        if density_scatter == True:
+            self.density_scatter(distance=distance, dat=values, bins=bins,
+                                 ax=ax, **kwargs)
 
         return [distance, values]
         
     def post_elev(self, min_val=float("-inf"), max_val=float("inf"),
                   start=None, end=None, ax=None, color='navy',
-                  cross=False, plot=False): 
+                  cross=False, swath_plot=False, bins=10, density_scatter=False, **kwargs):
         """Post-processing swath data according to elevation criteria.
 
         :param min_val: minimal elevation threshold, defaults to float("-inf")
@@ -498,6 +496,10 @@ class Base_curv():
         :return: a list contain distance and processed elevation data
         :rtype: list
         """
+        if swath_plot and density_scatter:
+            raise Exception("Swath profile and density scatters are not "  
+                            "meant to be plotted at the same time.")
+
         start_ind, end_ind = self._segment(start, end)
         
         lines_val = copy.deepcopy(self.dat[start_ind:end_ind])
@@ -515,15 +517,19 @@ class Base_curv():
            distance = cross_dat['distance']
            values = cross_dat['cross_matrix']
         
-        if plot == True:
+        if swath_plot == True:
             post_stat = self.profile_stat(values)
             self.plot(distance=distance, stat=post_stat, ax=ax, color=color)
+
+        if density_scatter == True:
+            self.density_scatter(distance=distance, dat=values, bins=bins,
+                                 ax=ax, **kwargs)
 
         return [distance, values]
 
     def post_slope(self, min_val=0., max_val=90.,
-                   start=None, end=None, ax=None, color='navy',
-                   cross=False, plot=False):                  
+                  start=None, end=None, ax=None, color='navy',
+                  cross=False, swath_plot=False, bins=10, density_scatter=False, **kwargs):
         """Post-processing swath data according to slope criteria.
 
         :param min_val: minimal slope threshold, defaults to float("-inf")
@@ -544,6 +550,10 @@ class Base_curv():
         :return: a list contain distance and processed slope data
         :rtype: list
         """
+        if swath_plot and density_scatter:
+            raise Exception("Swath profile and density scatters are not "  
+                            "meant to be plotted at the same time.")
+
         start_ind, end_ind = self._segment(start, end)
         
         lines_val = copy.deepcopy(self.dat[start_ind:end_ind])
@@ -555,15 +565,6 @@ class Base_curv():
         
         distance = self.distance[start_ind:end_ind]
         values = lines_val
-        
-        if cross == True:
-            cross_dat = self.cross_dat(dat=lines_val, start=start, end=end)
-            distance = cross_dat['distance']
-            values = cross_dat['cross_matrix']
-        
-        if plot == True:
-            post_stat = self.profile_stat(values)
-            self.plot(distance=distance, stat=post_stat, ax=ax, color=color)
             
         return [distance, values]
         
