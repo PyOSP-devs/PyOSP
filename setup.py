@@ -11,7 +11,7 @@ with open('README.md') as readme_file:
     readme = readme_file.read()
 
 DISTNAME = "pyosp"
-DESCRIPTION = "An Python Library fori Object-oriented Swath Profile Analysis"
+DESCRIPTION = "An Python Library for Object-oriented Swath Profile Analysis"
 AUTHOR = "Yichuan Zhu, Matthew A. Massey, Jason Dortch"
 AUTHOR_EMAIL = "yichuan211@gmail.com"
 URL = "https://github.com/PyOSP-devs/PyOSP.git"
@@ -47,7 +47,7 @@ REQUIREMENTS_FILE = join(PROJECT_ROOT, "requirements.txt")
 with open(REQUIREMENTS_FILE) as f:
     install_reqs = f.read().splitlines()
 
-test_reqs = ["pytest"]
+test_reqs = ["pytest", "pytest-cov"]
 
 setup(
     name=DISTNAME,
