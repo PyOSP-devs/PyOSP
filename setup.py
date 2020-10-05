@@ -2,6 +2,7 @@
 #
 #   Licensed under the Apache License, Version 2.0 (the "License")
 
+import os
 from os.path import realpath, dirname, join
 from setuptools import setup, find_packages
 import re
@@ -46,14 +47,6 @@ REQUIREMENTS_FILE = join(PROJECT_ROOT, "requirements.txt")
 with open(REQUIREMENTS_FILE) as f:
     install_reqs = f.read().splitlines()
 
-# get all data dirs in the datasets module
-data_files = []
-
-for item in os.listdir("pyosp/datasets"):
-    if not item.startswith("__"):
-        if os.path.isdir(os.path.join("pyosp/datasets/", item)):
-            data_files.append(os.path.join("datasets", item))
-
 test_reqs = ["pytest"]
 
 setup(
@@ -68,7 +61,7 @@ setup(
     long_description_content_type="text/x-rst",
     packages=find_packages(),
     include_package_data=True,
-    package_data={"pyosp": data_files},
+    package_data={"pyosp": 'datasets/*'},
     python_requires='>=3.5',
     install_requires=install_reqs,
     tests_require=test_reqs,
