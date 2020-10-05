@@ -21,11 +21,6 @@ classifiers=[
         'Intended Audience :: GIS/Science/Research',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
         "Operating System :: OS Independent",
 ]
 
