@@ -59,7 +59,7 @@ setup(
     url='https://github.com/PyOSP-devs/PyOSP.git',
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/x-rst",
-    packages=['pyosp'],
+    packages=find_packages(),
     include_package_data=True,
     package_data={"pyosp": ['./datasets/*']},
     python_requires='>=3.5',
