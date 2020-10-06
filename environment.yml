@@ -4,11 +4,12 @@ channels:
   - conda-forge
 
 dependencies:
-  - numpy >=1.19*
-  - matplotlib >=3.3*
+  - numpy 
+  - matplotlib 
   - gdal >=2.3*
   - shapely >=1.6*
-  - pytest >=6
+  - pytest 
   - nbsphinx
   - pandoc
   - ipython
+  - scipy

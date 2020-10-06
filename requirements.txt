@@ -1,5 +1,6 @@
 gdal>=2.3
-matplotlib>=3.3
-numpy>=1.19
+matplotlib
+numpy
 shapely>=1.6
 pytest
+scipy
