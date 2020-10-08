@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="pyosp logo" src="https://i.imgur.com/vLPaRWY.png" height="140" /></p>
+  <img alt="pyosp logo" src="https://i.imgur.com/vLPaRWY.png" height="200" /></p>
   <p align="center">
     <a href="/license"><img alt="software license" src="https://img.shields.io/github/license/yzh211/pyosp?style=flat-square"></a>
     <a href="/release"><img alt="github release (latest by date)" src="https://img.shields.io/github/v/release/yzh211/pyosp?style=flat-square"></a>
@@ -11,6 +11,7 @@
 ---
 
 <p><img alt="intro" src="https://i.imgur.com/7jkyyog.gif" height="300"/></p>
+
 _Intelligent and comprehensive swath analysis_
 
 ## Features
@@ -30,7 +31,7 @@ We recommend to use the [conda](https://conda.io/en/latest/) package manager to 
 conda install -c kgsdev pyosp 
 ```
 
-you can also install from current branch:
+You can also install from current branch:
 
 ```bash
 git clone https://github.com/pyosp-devs/pyosp.git
@@ -39,21 +40,19 @@ conda install --file requirements.txt
 python setup.py install
 ```
 
-you can verify installation by entering a python shell and typing:
+You can verify installation by entering a python shell and typing:
 
 ```python
 import pyosp
 print(pyosp.__version__)
 ```
-## Documentation
-Read the documentation at: https://pyosp.readthedocs.io/en/latest/index.html
 
 ## Example
-here is a simple example of using pyosp to perform swath analysis on a synthetic mountain case. the cross-width of mountain is around 90m, and only mountainous area possess non-zero elevations. 
+Here is a simple example of using pyosp to perform swath analysis on a synthetic mountain case. the cross-width of mountain is around 90m, and only mountainous area possess non-zero elevations. 
 
 <p><img alt="homo_case" src="https://i.imgur.com/nSFSqxo.png" height="200"/></p>
 
-original, elevation, slope and tpi based swath polygons.
+Original, elevation, slope and tpi based swath polygons.
 
 ```python
 import pyosp
@@ -77,11 +76,11 @@ tpi = pyosp.tpi_curv(line, raster, width=100,
                      line_stepsize=3, cross_stepsize=none)
 ```
 
-you can plot with matplotlib, or open in gis software.
+You can plot with matplotlib, or open in gis software.
 
 <p><img alt="homo_polygon" src="https://i.imgur.com/nLgQEsJ.jpg" height="200"/></p>
 
-plot, for example, elevation based swath profile.
+Plot, for example, elevation based swath profile.
 
 ```python
 elev.profile_plot()
@@ -89,28 +88,28 @@ elev.profile_plot()
 
 <img alt="elev_sp" src="https://i.imgur.com/0taXAhF.jpg.jpg" height="200"/></p>
 
-_for more example and usage, please refer to our publication, example gallery and documentation._
+_For more example and usage, please refer to our publication, example gallery and documentation._
 
 ## Citing pyosp
 
 ## Contributing
 
-any contributions you make are **greatly appreciated**.
+Any contributions you make are **greatly appreciated**.
 
-1. fork the project
-2. create your feature branch (`git checkout -b feature/amazingfeature`)
-3. commit your changes (`git commit -m 'add some amazingfeature'`)
-4. push to the branch (`git push origin feature/amazingfeature`)
-5. open a pull request
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/amazingfeature`)
+3. Commit your changes (`git commit -m 'add some amazingfeature'`)
+4. Push to the branch (`git push origin feature/amazingfeature`)
+5. Open a pull request
 
 ## Feedback
 
-- if you think pyosp is useful, consider giving it a start.
-- if something is not working, [create an issue](https://github.com/pyosp-devs/pyosp/issues/new)
-- if you need to get in touch for other reasons, [send us an email](yichuan211@gmail.com)
+- If you think pyosp is useful, consider giving it a start.
+- If something is not working, [create an issue](https://github.com/pyosp-devs/pyosp/issues/new)
+- If you need to get in touch for other reasons, [send us an email](yichuan211@gmail.com)
 
 ## Credits
-this work is supported by [kentucky geological survey](https://www.uky.edu/kgs/).
+This work is supported by [Kentucky Geological Survey](https://www.uky.edu/kgs/).
 
 ## License
-[apache license, version 2.0](https://github.com/pyosp-devs/pyosp/blob/master/license)
+[Apache license, version 2.0](https://github.com/pyosp-devs/pyosp/blob/master/license)
