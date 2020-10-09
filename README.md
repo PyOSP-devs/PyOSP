@@ -28,7 +28,7 @@ Read the documentation at: https://pyosp.readthedocs.io/en/latest/index.html
 We recommend to use the [conda](https://conda.io/en/latest/) package manager to install pyosp. It will provide pre-built binaries for all dependencies of pyosp. if you have the [miniconda](https://docs.conda.io/en/latest/miniconda.html) (recommend; only containing python and the conda package manager), or [anaconda distribution](https://www.anaconda.com/) (a python distribution with many installed libraries for data science) installed, then simply execute the following command:
 
 ```bash
-conda install -c kgsdev pyosp 
+conda install -c conda-forge -c kgsdev pyosp 
 ```
 
 You can also install from current branch:
