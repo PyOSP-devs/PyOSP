@@ -6,7 +6,7 @@ channels:
 dependencies:
   - numpy 
   - matplotlib 
-  - gdal >=2.3*
+  - gdal >=3
   - shapely >=1.6*
   - pytest 
   - nbsphinx

@@ -1,4 +1,4 @@
-gdal
+gdal>=3
 matplotlib
 numpy
 shapely
