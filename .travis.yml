@@ -16,9 +16,9 @@ install:
   - conda info -a
 
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION 
-  - conda install --file requirements.txt
   - conda activate test-environment
-  - pip install pytest-cov
+  - conda install --file requirements.txt
+  - conda install pytest-cov
   - python setup.py install
 
 script:
