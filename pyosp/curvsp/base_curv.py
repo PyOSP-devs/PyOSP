@@ -215,6 +215,24 @@ class Base_curv():
     
     def density_scatter(self, distance=None, dat=None, bins=10, 
                         start=None, end=None, ax=None, **kwargs):
+        """Plot the density scatter of all collected raster values.
+        Use 2D histogram approach to discretize the space of swath profile.
+        Colors of scatters show the cluster density of collected data points. 
+
+        :param distance: longitudial or cross distance, usually set to None
+        :type distance: optional
+        :param dat: longitudial or cross data, usually set to None
+        :type dat: optional
+        :param bins: number of bin for histogram calculation, defaults to 10
+        :type bins: int, optional
+        :param start: starting point, can be coordinates or distance 
+        :type start: float or array-like, optional
+        :param end: ending point, can be coordinates or distance
+        :type end: float or array-like, optional
+        :param ax: matplotlib axes object, defaults to None
+        :param **kwargs: **kwargs pass to Matplotlib scatter handle
+        :type **kwargs: arbitrary, optional
+        """
         start_ind, end_ind = self._segment(start, end)
         distance = list(self.distance[start_ind:end_ind] if distance is None else distance[start_ind:end_ind])
         dat = self.dat[start_ind:end_ind] if dat is None else dat[start_ind:end_ind] 
@@ -435,10 +453,16 @@ class Base_curv():
         :param ax: matplotlib axes object, defaults to None
         :param color: color of quartiles, defaults to 'navy'
         :type color: str, optional
-        :param cross: plot the processed cross-swath profile, defaults to False
+        :param cross: processing cross-swath profile, defaults to False
         :type cross: bool, optional
-        :param plot: plot the processed swath profile, defaults to False
-        :type plot: bool, optional
+        :param swath_plot: plot the processed swath profile, defaults to False
+        :type swath_plot: bool, optional
+        :param bins: number of bin for density scatter, defaults to 10
+        :type bins: int, optional
+        :param density_scatter: plot the processed density scatter, defaults to False
+        :type density_scatter: bool, optional
+        :param **kwargs: **kwargs pass to Matplotlib scatter handle
+        :type **kwargs: arbitrary, optional
         :return: a list contain distance and processed elevation data
         :rtype: list
         """
@@ -489,10 +513,16 @@ class Base_curv():
         :param ax: matplotlib axes object, defaults to None
         :param color: color of quartiles, defaults to 'navy'
         :type color: str, optional
-        :param cross: plot the processed cross-swath profile, defaults to False
+        :param cross: processing cross-swath profile, defaults to False
         :type cross: bool, optional
-        :param plot: plot the processed swath profile, defaults to False
-        :type plot: bool, optional
+        :param swath_plot: plot the processed swath profile, defaults to False
+        :type swath_plot: bool, optional
+        :param bins: number of bin for density scatter, defaults to 10
+        :type bins: int, optional
+        :param density_scatter: plot the processed density scatter, defaults to False
+        :type density_scatter: bool, optional
+        :param **kwargs: **kwargs pass to Matplotlib scatter handle
+        :type **kwargs: arbitrary, optional
         :return: a list contain distance and processed elevation data
         :rtype: list
         """
@@ -543,10 +573,16 @@ class Base_curv():
         :param ax: matplotlib axes object, defaults to None
         :param color: color of quartiles, defaults to 'navy'
         :type color: str, optional
-        :param cross: plot the processed cross-swath profile, defaults to False
+        :param cross: processing cross-swath profile, defaults to False
         :type cross: bool, optional
-        :param plot: plot the processed swath profile, defaults to False
-        :type plot: bool, optional
+        :param swath_plot: plot the processed swath profile, defaults to False
+        :type swath_plot: bool, optional
+        :param bins: number of bin for density scatter, defaults to 10
+        :type bins: int, optional
+        :param density_scatter: plot the processed density scatter, defaults to False
+        :type density_scatter: bool, optional
+        :param **kwargs: **kwargs pass to Matplotlib scatter handle
+        :type **kwargs: arbitrary, optional
         :return: a list contain distance and processed slope data
         :rtype: list
         """

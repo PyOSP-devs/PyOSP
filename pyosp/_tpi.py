@@ -21,11 +21,13 @@ class Tpi():
         self.radiusInPixel = int(radius / self.geoTransform[1])
         
     def point_position(self):
+        " Define the point position on the raster"
         x = int((self.p[0] - self.geoTransform[0]) / self.geoTransform[1])
         y = int((self.geoTransform[3] - self.p[1]) / -self.geoTransform[5])
         return y, x
     
     def avg_window(self):
+        "Calculate the average raster value within the window, exclude the central point."
         py, px = self.point_position()
         xmin = max(0, px-self.radiusInPixel)
         xmax = min(self.cols, px+self.radiusInPixel+1)
