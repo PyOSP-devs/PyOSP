@@ -28,4 +28,7 @@ after_script:
 
 after_success:
   - coveralls || echo "!! intermittent coveralls failure"
+
+notifications:
+  email: false
    
