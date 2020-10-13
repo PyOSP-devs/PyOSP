@@ -3,7 +3,7 @@
   <p align="center">
     <a href="/license"><img alt="software license" src="https://img.shields.io/github/license/yzh211/pyosp?style=flat-square"></a>
     <a href="/release"><img alt="github release (latest by date)" src="https://img.shields.io/github/v/release/yzh211/pyosp?style=flat-square"></a>
-    <a href="/build"><img alt="TravisCI" src="https://img.shields.io/github/v/release/yzh211/pyosp?style=flat-square"></a>
+    <a href="/build"><img alt="TravisCI" src="https://travis-ci.org/PyOSP-devs/PyOSP.svg?branch=master"></a>
     <a href='https://coveralls.io/github/PyOSP-devs/PyOSP?branch=master'><img src='https://coveralls.io/repos/github/PyOSP-devs/PyOSP/badge.svg?branch=master' alt='Coverage Status' /></a>
     <img alt="publication" src="https://img.shields.io/badge/publication-geomorphology-blue?style=flat-square"></a>
   </p>
