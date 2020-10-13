@@ -22,4 +22,10 @@ install:
 
 script:
   - pytest -v --cov=pyosp --cov-report=term-missing
+
+after_script:
+  - python setup.py clean
+
+after_success:
+  - coveralls || echo "!! intermittent coveralls failure"
    
