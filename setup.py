@@ -62,7 +62,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={"pyosp": ['./datasets/*']},
-    python_requires='>=3.5',
+    python_requires='>=3.6',
     install_requires=install_reqs,
     tests_require=test_reqs,
 )
