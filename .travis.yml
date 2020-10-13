@@ -17,7 +17,7 @@ install:
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION 
   - conda activate test-environment
   - conda install -c conda-forge --file requirements.txt
-  - conda install -c conda-forge pytest-cov
+  - conda install -c conda-forge pytest-cov coveralls
   - python setup.py install
 
 script:
