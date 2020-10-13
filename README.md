@@ -17,10 +17,10 @@ _Intelligent and comprehensive swath analysis_
 
 ## Features
 
-- :gem: **intelligent**: objectively identify irregular boundries using elevation, slope, tpi, or other raster analyses.
-- :milky_way: **comprehensive**: cuvilinear and circular swath analyses, reclassification of swath data, cross-swath, slice and histogram, etc.  
-- :two_women_holding_hands: **compatible**: work seamlessly with gis software.
-- :anchor: **dependencies**: numpy, matplotlib, gdal, scipy and shapely.
+- :gem: **Intelligent**: objectively identify irregular boundries using elevation, slope, tpi, or other raster analyses.
+- :milky_way: **Comprehensive**: cuvilinear and circular swath analyses, reclassification of swath data, cross-swath, slice and histogram, etc.  
+- :two_women_holding_hands: **Compatible**: work seamlessly with gis software.
+- :anchor: **Dependencies**: numpy, matplotlib, gdal, scipy and shapely.
 
 ## Documentation
 Read the documentation at: https://pyosp.readthedocs.io/en/latest/index.html
