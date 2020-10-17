@@ -1,3 +1,0 @@
-Traditional curvilinear swath analysis
-======================================
-
