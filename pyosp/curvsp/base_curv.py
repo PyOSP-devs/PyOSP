@@ -118,8 +118,8 @@ class Base_curv():
         line_segment = self.lines[start_ind:end_ind]
             
         try:
-            l_points = [x[0] for x in line_segment]
-            r_points = [x[-1] for x in line_segment[::-1]]
+            l_points = [x[0] for x in line_segment if x]
+            r_points = [x[-1] for x in line_segment[::-1] if x]
         except IndexError:
             raise Exception("Empty swath profile, please try reset arguments.")
         
@@ -140,8 +140,8 @@ class Base_curv():
         line_segment = self.lines[start_ind:end_ind]
         
         try:
-             l_points = [x[0] for x in line_segment]
-             r_points = [x[-1] for x in line_segment[::-1]]
+             l_points = [x[0] for x in line_segment if x]
+             r_points = [x[-1] for x in line_segment[::-1] if x]
         except IndexError:
             raise Exception("Empty swath profile, please try reset arguments.")
         

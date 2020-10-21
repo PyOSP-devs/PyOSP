@@ -65,34 +65,41 @@ class Orig_curv(Base_curv):
             p_m = p2
         else:
             p_m = p1
-        
-        transect_temp = [p_m]
-        
-        nPoints = int(self.width/2 // self.cross_stepsize)
-        slope = -(p2[0]-p1[0])/(p2[1]-p1[1])
-        for i in range(nPoints):
-            dx = np.sqrt((self.cross_stepsize*(i+1))**2 / (slope**2+1))
-            dy = dx * abs(slope)
-            
-            if slope >= 0 and p2[0] < p1[0] and p2[1] >= p1[1]:
-                p_left = [p_m[0]-dx, p_m[1]-dy]
-            elif slope >= 0 and p2[0] >= p1[0] and p2[1] < p1[1]:
-                p_left = [p_m[0]+dx, p_m[1]+dy]
-            elif slope < 0 and p2[0] < p1[0] and p2[1] < p1[1]:
-                p_left = [p_m[0]+dx, p_m[1]-dy]
-            elif slope < 0 and p2[0] >= p1[0] and p2[1] >= p1[1]:
-                p_left = [p_m[0]-dx, p_m[1]+dy]
-            
-            # discard point out of bounds
-            rasterVal = Point_elevation(p_left, self.raster).value
-            if not (
-            (self.rasterXmin <= p_left[0] <= self.rasterXmax) and 
-            (self.rasterYmin <= p_left[1] <= self.rasterYmax) and
-            (rasterVal > -1e20)  
-            ):
-                break
-            
-            transect_temp.insert(0,p_left)
+
+        rasterVal = Point_elevation(p_m, self.raster).value
+        if not (
+        (self.rasterXmin <= p_m[0] <= self.rasterXmax) and 
+        (self.rasterYmin <= p_m[1] <= self.rasterYmax) and
+        (rasterVal > -1e20)  
+        ):
+            transect_temp = []
+        else:
+            transect_temp = [p_m] 
+            nPoints = int(self.width/2 // self.cross_stepsize)
+            slope = -(p2[0]-p1[0])/(p2[1]-p1[1])
+            for i in range(nPoints):
+                dx = np.sqrt((self.cross_stepsize*(i+1))**2 / (slope**2+1))
+                dy = dx * abs(slope)
+                
+                if slope >= 0 and p2[0] < p1[0] and p2[1] >= p1[1]:
+                    p_left = [p_m[0]-dx, p_m[1]-dy]
+                elif slope >= 0 and p2[0] >= p1[0] and p2[1] < p1[1]:
+                    p_left = [p_m[0]+dx, p_m[1]+dy]
+                elif slope < 0 and p2[0] < p1[0] and p2[1] < p1[1]:
+                    p_left = [p_m[0]+dx, p_m[1]-dy]
+                elif slope < 0 and p2[0] >= p1[0] and p2[1] >= p1[1]:
+                    p_left = [p_m[0]-dx, p_m[1]+dy]
+                
+                # discard point out of bounds
+                rasterVal = Point_elevation(p_left, self.raster).value
+                if not (
+                (self.rasterXmin <= p_left[0] <= self.rasterXmax) and 
+                (self.rasterYmin <= p_left[1] <= self.rasterYmax) and
+                (rasterVal > -1e20)  
+                ):
+                    break
+                
+                transect_temp.insert(0,p_left)
             
         return transect_temp
     

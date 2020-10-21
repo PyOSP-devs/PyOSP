@@ -19,6 +19,17 @@ PyOSP supports Python 3.0 or higher, and depends on `Numpy <https://numpy.org/>`
    Traditional circular swath analysis <notebooks/fix_radius_cir>
    Object-oriented swath analysis <notebooks/object_homo>
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Tutorial 
+   
+   Customized swath analysis and a close look of data structure <notebooks/customized_swath>
+   Slice and histogram analysis
+   Swath profile with scatter plots
+   Cross-swath analysis
+   Density(Hot) scatter plot
+   Data reclassification
+
 Indices and tables
 ==================
 
