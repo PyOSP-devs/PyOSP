@@ -7,8 +7,8 @@ curvilinear sampling blocks, PyOSP can objectively characterize complex geomorph
 elevation, slope angle, topographic position index (TPI), or other raster calculations by intelligently
 assimilating geo-processing information into swath analysis.
 
-PyOSP supports Python 3.0 or higher, and depends on `Numpy <https://numpy.org/>`_ , `Matplotlib 
-<https://matplotlib.org/>`_ , `GDAL <https://gdal.org/>`_ , and `Shapely <https://shapely.readthedocs.io/en/latest/>`_ .
+PyOSP supports Python 3.6 or higher, and depends on `Numpy <https://numpy.org/>`_ , `Matplotlib 
+<https://matplotlib.org/>`_ , `GDAL <https://gdal.org/>`_ , `SciPy <https://www.scipy.org/>`_, and `Shapely <https://shapely.readthedocs.io/en/latest/>`_ .
 
 .. toctree::
    :maxdepth: 1
@@ -23,7 +23,7 @@ PyOSP supports Python 3.0 or higher, and depends on `Numpy <https://numpy.org/>`
    :maxdepth: 1
    :caption: Tutorial 
    
-   Customized swath analysis and a close look of data structure <notebooks/customized_swath>
+   Customized swath analysis and essential data structure <notebooks/customized_swath>
    Slice and histogram analysis
    Swath profile with scatter plots
    Cross-swath analysis
