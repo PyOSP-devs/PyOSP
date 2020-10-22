@@ -76,42 +76,48 @@ class Slope_curv(Base_curv):
         else:
             p_m = p1
         
-        transect_temp = [p_m]
-        
-        # nPoints = int(self.width // self.cross_stepsize)
-        slope = -(p2[0]-p1[0])/(p2[1]-p1[1])
-        for i in range(1,sys.maxsize,1):
-            dx = np.sqrt((self.cross_stepsize*i)**2 / (slope**2+1))
-            dy = dx * abs(slope)
-            
-            if slope >= 0 and p2[0] < p1[0] and p2[1] >= p1[1]:
-                p_left = [p_m[0]-dx, p_m[1]-dy]
-            elif slope >= 0 and p2[0] >= p1[0] and p2[1] < p1[1]:
-                p_left = [p_m[0]+dx, p_m[1]+dy]
-            elif slope < 0 and p2[0] < p1[0] and p2[1] < p1[1]:
-                p_left = [p_m[0]+dx, p_m[1]-dy]
-            elif slope < 0 and p2[0] >= p1[0] and p2[1] >= p1[1]:
-                p_left = [p_m[0]-dx, p_m[1]+dy]
-            
-            # discard point out of bounds
-            if not (
-            (self.rasterXmin < p_left[0] < self.rasterXmax) and 
-            (self.rasterYmin < p_left[1] < self.rasterYmax)
-            ):
-                break
-            
-            # break if maximum width reached
-            if self.width is not None:
-                hw = np.sqrt(dx**2 + dy**2)
-                if hw >= self.width/2:
+        rasterVal = Geo_slope(p_m, self.raster, self.cell_size).value
+        if not (
+        (self.rasterXmin <= p_m[0] <= self.rasterXmax) and 
+        (self.rasterYmin <= p_m[1] <= self.rasterYmax) and
+        (self.min_slope <= rasterVal <= self.max_slope)
+        ):
+            transect_temp = []
+        else:
+            transect_temp = [p_m]
+            slope = -(p2[0]-p1[0])/(p2[1]-p1[1])
+            for i in range(1,sys.maxsize,1):
+                dx = np.sqrt((self.cross_stepsize*i)**2 / (slope**2+1))
+                dy = dx * abs(slope)
+                
+                if slope >= 0 and p2[0] < p1[0] and p2[1] >= p1[1]:
+                    p_left = [p_m[0]-dx, p_m[1]-dy]
+                elif slope >= 0 and p2[0] >= p1[0] and p2[1] < p1[1]:
+                    p_left = [p_m[0]+dx, p_m[1]+dy]
+                elif slope < 0 and p2[0] < p1[0] and p2[1] < p1[1]:
+                    p_left = [p_m[0]+dx, p_m[1]-dy]
+                elif slope < 0 and p2[0] >= p1[0] and p2[1] >= p1[1]:
+                    p_left = [p_m[0]-dx, p_m[1]+dy]
+                
+                # discard point out of bounds
+                if not (
+                (self.rasterXmin < p_left[0] < self.rasterXmax) and 
+                (self.rasterYmin < p_left[1] < self.rasterYmax)
+                ):
                     break
-            
-            p_slope = Geo_slope(p_left, self.raster, self.cell_size).value
- 
-            if not self.min_slope <= p_slope <= self.max_slope:
-                break
-            
-            transect_temp.insert(0,p_left)
+                
+                # break if maximum width reached
+                if self.width is not None:
+                    hw = np.sqrt(dx**2 + dy**2)
+                    if hw >= self.width/2:
+                        break
+                
+                p_slope = Geo_slope(p_left, self.raster, self.cell_size).value
+    
+                if not self.min_slope <= p_slope <= self.max_slope:
+                    break
+                
+                transect_temp.insert(0,p_left)
             
         return transect_temp
     

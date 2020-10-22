@@ -8,7 +8,7 @@ The easiest way to install PyOSP is through `conda
 <https://docs.conda.io/projects/conda/en/latest/user-guide/install/download.html>`_ 
 with the following command::
 
-    conda install -c conda-forge -c kgsdev pyosp
+    conda install -c conda-forge pyosp
 
 Installing from source
 ----------------------

@@ -34,7 +34,9 @@ class Tpi():
         ymin = max(0, py-self.radiusInPixel)
         ymax = min(self.rows, py+self.radiusInPixel+1)
         arr = self.raster.ReadAsArray(xoff=xmin, yoff=ymin, xsize=xmax-xmin, ysize=ymax-ymin)
-        avg = (np.nansum(arr)-self.point_value()) / (arr.size-1)
+        # Treat small values as no data
+        arr[arr < -1e20] = np.nan
+        avg = (np.nansum(arr)-self.point_value()) / (np.sum(~np.isnan(arr))-1)
         return avg 
     
     def point_value(self):

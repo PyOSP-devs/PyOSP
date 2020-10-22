@@ -26,10 +26,10 @@ _Intelligent and comprehensive swath analysis_
 Read the documentation at: https://pyosp.readthedocs.io/en/latest/index.html
 
 ## Installation
-We recommend to use the [conda](https://conda.io/en/latest/) package manager to install pyosp. It will provide pre-built binaries for all dependencies of pyosp. if you have the [miniconda](https://docs.conda.io/en/latest/miniconda.html) (recommend; only containing python and the conda package manager), or [anaconda distribution](https://www.anaconda.com/) (a python distribution with many installed libraries for data science) installed, then simply execute the following command:
+We recommend to use the [conda](https://conda.io/en/latest/) package manager to install pyosp. It will provide pre-built binaries for all dependencies of pyosp. If you have the [miniconda](https://docs.conda.io/en/latest/miniconda.html) (recommend; only containing python and the conda package manager), or [anaconda distribution](https://www.anaconda.com/) (a python distribution with many installed libraries for data science) installed, then simply execute the following command:
 
 ```bash
-conda install -c conda-forge -c kgsdev pyosp 
+conda install -c conda-forge pyosp 
 ```
 
 You can also install from current branch:
@@ -49,7 +49,7 @@ print(pyosp.__version__)
 ```
 
 ## Example
-Here is a simple example of using pyosp to perform swath analysis on a synthetic mountain case. the cross-width of mountain is around 90m, and only mountainous area possess non-zero elevations. 
+Here is a simple example of using pyosp to perform swath analysis on a synthetic mountain case. The cross-width of mountain is around 90m, and only mountainous area possess non-zero elevations. 
 
 <p><img alt="homo_case" src="https://i.imgur.com/nSFSqxo.png" height="200"/></p>
 
@@ -77,7 +77,7 @@ tpi = pyosp.tpi_curv(line, raster, width=100,
                      line_stepsize=3, cross_stepsize=none)
 ```
 
-You can plot with matplotlib, or open in gis software.
+You can plot with matplotlib, or open in GIS software.
 
 <p><img alt="homo_polygon" src="https://i.imgur.com/nLgQEsJ.jpg" height="200"/></p>
 
@@ -89,7 +89,7 @@ elev.profile_plot()
 
 <img alt="elev_sp" src="https://i.imgur.com/0taXAhF.jpg.jpg" height="200"/></p>
 
-_For more example and usage, please refer to our publication, example gallery and documentation._
+_For more example and usage, please refer to our documentation._
 
 ## Citing pyosp
 

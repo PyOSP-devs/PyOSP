@@ -177,7 +177,7 @@ class Base_curv():
         
         return [min_z, max_z, mean_z, q1, q3]
     
-    def plot(self, distance, stat, points=None,
+    def plot(self, distance, stat, points=None, cross=False,
              start=None, end=None, ax=None, color='navy', **kwargs):         
         """Summary statistics plot.
         """
@@ -200,12 +200,22 @@ class Base_curv():
             elev_array = np.empty(0)
             for p in p_coords:
                 point = Point(p)
-                dist = self.line.project(point)
+                if cross is True:
+                    # check if the points on the left or right side of baseline
+                    dist_noSign = point.distance(self.line)
+                    line_leftOff = self.line.parallel_offset(distance=1e-5, side="left")
+                    dist_leftLine = point.distance(line_leftOff)
+                    if dist_noSign <= dist_leftLine:
+                        dist = dist_noSign
+                    else:
+                        dist = -dist_noSign
+                else:
+                    dist = self.line.project(point)
                 elev = Point_elevation(p, self.raster).value
                 dist_array = np.append(dist_array, dist)
                 elev_array = np.append(elev_array, elev)
                 
-            ax.scatter(dist_array, elev_array, **kwargs)
+            ax.scatter(dist_array, elev_array, zorder=3, **kwargs)
         
         ax.set_xlabel("Distance")
         ax.set_ylabel("Elevation")
@@ -236,6 +246,11 @@ class Base_curv():
         start_ind, end_ind = self._segment(start, end)
         distance = list(self.distance[start_ind:end_ind] if distance is None else distance[start_ind:end_ind])
         dat = self.dat[start_ind:end_ind] if dat is None else dat[start_ind:end_ind] 
+
+        # delete empty list
+        empty_list = [i for i,x in enumerate(dat) if not x]
+        distance = [i for j,i in enumerate(distance) if j not in empty_list] 
+        dat = [i for j,i in enumerate(dat) if j not in empty_list] 
 
         x, y = np.empty(0), np.empty(0) 
         for ind, dist in enumerate(distance):
@@ -323,9 +338,17 @@ class Base_curv():
         plt.tight_layout()
         return ax
         
-    def hist(self, dat=None, ax=None, bins=50):
-        """Return a histogram plot.
+    def hist(self, dat=None, ax=None, bins=50, **kwargs):
+        """Return a histogram plot
+
+        :param dat: Input data, defaults to all swath data
+        :type dat: nested list, optional
+        :param ax: Matplotlib axes object, defaults to None
+        :param bins: number of binds, defaults to 50
+        :type bins: int, optional
+        :return: Matplotlib axes object
         """
+
         dat = self.dat if dat is None else dat
 
         # see if it is a nested list 
@@ -339,7 +362,7 @@ class Base_curv():
         if ax is None:
             fig, ax = plt.subplots()
 
-        ax.hist(dat_array, bins=bins, histtype='stepfilled', alpha=1, density=True)
+        ax.hist(dat_array, bins=bins, histtype='stepfilled', density=True, **kwargs)
         ax.set_xlabel("Elevation")
         ax.set_ylabel("PDF")
         # ax.grid()
@@ -380,11 +403,14 @@ class Base_curv():
         """
         start_ind, end_ind = self._segment(start, end)
         dat = self.dat[start_ind:end_ind] if dat is None else dat
+
+        data = [ele for ele in dat if ele != []] 
+        lines = [line for line in self.lines[start_ind:end_ind] if line != []]
          
         # only baseline point was restored as tuple, others were lists
         left = []
         right = []
-        for i in self.lines[start_ind:end_ind]:
+        for i in lines:
             left_num = i.index([x for x in i if isinstance(x, tuple)][0])
             right_num = len(i) - left_num - 1
             left.append(left_num)
@@ -400,7 +426,7 @@ class Base_curv():
         
         # cross_matrix = np.zeros((len(distance), len(self.lines[start:end])))
         cross_profile = []
-        for count, ele in enumerate(dat):
+        for count, ele in enumerate(data):
             line_dat = np.vstack(ele).flatten()
             line_pad = np.pad(line_dat, 
                              (left_max-left[count], right_max-right[count]),
@@ -410,7 +436,8 @@ class Base_curv():
         return {'distance': distance,
                 'cross_matrix': list(map(list, zip(*cross_profile)))}
     
-    def cross_plot(self, start=None, end=None, ax=None, color='navy', points=None, **kwargs):
+    def cross_plot(self, start=None, end=None, ax=None, color='navy',
+                   points=None, density_scatter=False, **kwargs):
         """Return the plot of cross-profile.
 
         :param start: Starting position of cross-swath, defaults to starting point of baseline
@@ -431,9 +458,13 @@ class Base_curv():
         # default to plot all along cross direction
         start = None
         end = None
-        
-        self.plot(distance=distance, stat=cross_stat, start=start, end=end,
-                  ax=ax, color=color, points=points, **kwargs)
+
+        if density_scatter is True:
+            self.density_scatter(distance=distance, dat=cross, start=start,
+                                 end=end, ax=ax, **kwargs)
+        else:
+            self.plot(distance=distance, stat=cross_stat, start=start, end=end,
+                    ax=ax, color=color, points=points, cross=True, **kwargs)
     
     def post_tpi(self, radius, min_val=float("-inf"), max_val=float("inf"),
                  start=None, end=None, ax=None, color='navy',
@@ -601,6 +632,18 @@ class Base_curv():
         
         distance = self.distance[start_ind:end_ind]
         values = lines_val
-            
-        return [distance, values]
         
+        if cross == True:
+           cross_dat = self.cross_dat(dat=lines_val, start=start, end=end)
+           distance = cross_dat['distance']
+           values = cross_dat['cross_matrix']
+        
+        if swath_plot == True:
+            post_stat = self.profile_stat(values)
+            self.plot(distance=distance, stat=post_stat, ax=ax, color=color)
+
+        if density_scatter == True:
+            self.density_scatter(distance=distance, dat=values, bins=bins,
+                                 ax=ax, **kwargs)
+
+        return [distance, values]

@@ -24,11 +24,11 @@ PyOSP supports Python 3.6 or higher, and depends on `Numpy <https://numpy.org/>`
    :caption: Tutorial 
    
    Customized swath analysis and essential data structure <notebooks/customized_swath>
-   Slice and histogram analysis
-   Swath profile with scatter plots
-   Cross-swath analysis
-   Density(Hot) scatter plot
-   Data reclassification
+   Slice and histogram analysis <notebooks/Slice_hist>
+   Swath profile with scatter plots <notebooks/swath_scatter>
+   Cross-swath analysis <notebooks/cross_swath>
+   Density(Heat) scatter plot <notebooks/density_scatter>
+   Data reclassification <notebooks/reclass>
 
 Indices and tables
 ==================
