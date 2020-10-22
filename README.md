@@ -19,7 +19,7 @@ _Intelligent and comprehensive swath analysis_
 
 - :gem: **Intelligent**: objectively identify irregular boundries using elevation, slope, tpi, or other raster analyses.
 - :milky_way: **Comprehensive**: cuvilinear and circular swath analyses, reclassification of swath data, cross-swath, slice and histogram, etc.  
-- :two_women_holding_hands: **Compatible**: work seamlessly with gis software.
+- :two_women_holding_hands: **Compatible**: work seamlessly with GIS software.
 - :anchor: **Dependencies**: numpy, matplotlib, gdal, scipy and shapely.
 
 ## Documentation
@@ -32,7 +32,22 @@ We recommend to use the [conda](https://conda.io/en/latest/) package manager to 
 conda install -c conda-forge pyosp 
 ```
 
-You can also install from current branch:
+## Installing in a new environment (recommended)
+
+Although it is not required, installing the library in a clean environment represents
+good practice and helps avoid potential dependency conflicts. We also recommends install
+all dependencies with pyosp through conda-forge channel
+
+```bash
+conda create -n env_pyosp 
+conda activate env_pyosp
+conda config --env --add channels conda-forge
+conda config --env --set channel_priority strict
+conda install python=3 pyosp
+```
+
+
+### You can also install from current branch:
 
 ```bash
 git clone https://github.com/pyosp-devs/pyosp.git
@@ -49,11 +64,11 @@ print(pyosp.__version__)
 ```
 
 ## Example
-Here is a simple example of using pyosp to perform swath analysis on a synthetic mountain case. The cross-width of mountain is around 90m, and only mountainous area possess non-zero elevations. 
+Here is a simple example of using pyosp to perform swath analysis on a synthetic mountain case. The cross-width of mountain is around 90m, and flat ground has elevation of zero.
 
 <p><img alt="homo_case" src="https://i.imgur.com/nSFSqxo.png" height="200"/></p>
 
-Original, elevation, slope and tpi based swath polygons.
+Original, elevation, slope and tpi based swath calculation.
 
 ```python
 import pyosp
@@ -77,7 +92,7 @@ tpi = pyosp.tpi_curv(line, raster, width=100,
                      line_stepsize=3, cross_stepsize=none)
 ```
 
-You can plot with matplotlib, or open in GIS software.
+We can plot with matplotlib, or open in GIS software.
 
 <p><img alt="homo_polygon" src="https://i.imgur.com/nLgQEsJ.jpg" height="200"/></p>
 
