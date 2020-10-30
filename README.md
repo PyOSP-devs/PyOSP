@@ -76,18 +76,18 @@ import pyosp
 baseline = pyosp.datasets.get_path("homo_baseline.shp") # the path to baseline shapefile
 raster = pyosp.datasets.get_path("homo_mount.tif")  # the path to raster file
 
-orig = pyosp.orig_curv(line, raster, width=100,
+orig = pyosp.Orig_curv(line, raster, width=100,
                        line_stepsize=3, cross_stepsize=none)
 
-elev = pyosp.elev_curv(line, raster, width=100,
+elev = pyosp.Elev_curv(line, raster, width=100,
                        min_elev=0.01,
                        line_stepsize=3, cross_stepsize=none)
 
-slope = pyosp.slope_curv(line, raster, width=100,
+slope = pyosp.Slope_curv(line, raster, width=100,
                          min_slope=1,
                          line_stepsize=3, cross_stepsize=none)
 
-tpi = pyosp.tpi_curv(line, raster, width=100,
+tpi = pyosp.Tpi_curv(line, raster, width=100,
                      tpi_radius=50, min_tpi=0,
                      line_stepsize=3, cross_stepsize=none)
 ```
