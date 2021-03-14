@@ -77,19 +77,19 @@ baseline = pyosp.datasets.get_path("homo_baseline.shp") # the path to baseline s
 raster = pyosp.datasets.get_path("homo_mount.tif")  # the path to raster file
 
 orig = pyosp.Orig_curv(line, raster, width=100,
-                       line_stepsize=3, cross_stepsize=none)
+                       line_stepsize=3, cross_stepsize=None)
 
 elev = pyosp.Elev_curv(line, raster, width=100,
                        min_elev=0.01,
-                       line_stepsize=3, cross_stepsize=none)
+                       line_stepsize=3, cross_stepsize=None)
 
 slope = pyosp.Slope_curv(line, raster, width=100,
                          min_slope=1,
-                         line_stepsize=3, cross_stepsize=none)
+                         line_stepsize=3, cross_stepsize=None)
 
 tpi = pyosp.Tpi_curv(line, raster, width=100,
                      tpi_radius=50, min_tpi=0,
-                     line_stepsize=3, cross_stepsize=none)
+                     line_stepsize=3, cross_stepsize=None)
 ```
 
 We can plot with matplotlib, or open in GIS software.

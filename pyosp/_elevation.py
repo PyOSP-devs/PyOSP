@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-class Point_elevation():
+
+class Point_elevation:
     """Get point elevation by given raster.
 
     :param point: point coordinates
@@ -8,6 +9,7 @@ class Point_elevation():
     :param raster: GeoRaster read by GDAL
     :type raster: GDAL dataset
     """
+
     def __init__(self, point, raster):
         self.p = point
         self.raster = raster
@@ -17,7 +19,7 @@ class Point_elevation():
         x = int((self.p[0] - self.geoTransform[0]) / self.geoTransform[1])
         y = int((self.geoTransform[3] - self.p[1]) / -self.geoTransform[5])
         return x, y
-    
+
     @property
     def value(self):
         px, py = self.point_position()

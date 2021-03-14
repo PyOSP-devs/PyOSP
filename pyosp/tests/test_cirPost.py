@@ -9,12 +9,13 @@ import pickle
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 dat = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../datasets/")
 
+
 class TestPost:
     def test_outPolygon(self, orig_cir):
         orig = orig_cir()
         polygon = orig.out_polygon()
         px, py = polygon.exterior.xy
-        assert len(px) == 303 
+        assert len(px) == 303
         assert len(py) == 303
 
     def test_outpolylines(self, orig_cir):
@@ -31,7 +32,7 @@ class TestPost:
 
     def test_profilePlot(self, orig_cir):
         orig = orig_cir()
-        orig.profile_plot(color="maroon", p_coords=[ [40,40] ], s=3, c="k")
+        orig.profile_plot(color="maroon", p_coords=[[40, 40]], s=3, c="k")
         assert True
 
     def test_slicePlot(self, orig_cir):
@@ -50,7 +51,7 @@ class TestPost:
         orig = orig_cir()
         orig.hist(bins=20)
         assert True
-    
+
     def test_sliceHist(self, orig_cir):
         orig = orig_cir()
         orig.slice_hist(angle=200, bins=20)

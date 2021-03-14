@@ -17,7 +17,7 @@ import pyosp
 # -- Project information -----------------------------------------------------
 
 project = 'pyosp'
-copyright = '2020, PyOSP developers'
+copyright = '2021, PyOSP developers'
 author = 'PyOSP developers'
 
 # The full version, including alpha/beta/rc tags
