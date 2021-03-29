@@ -10,7 +10,7 @@ __all__ = [
     "progressBar",
 ]
 
-import osgeo import ogr
+from osgeo import ogr
 import json
 import itertools
 from shapely.geometry import shape
