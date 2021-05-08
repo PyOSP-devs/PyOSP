@@ -107,6 +107,9 @@ elev.profile_plot()
 _For more example and usage, please refer to our documentation._
 
 ## Citing pyosp
+If you use PyOSP for your work, please cite as:
+
+Y. Zhu, J.M. Dortch, M.A. Massey, et al., An Intelligent Swath Tool to Characterize complex Topographic Features: Theory and Application in the Teton Range, Licking River, and Olympus Mons, Geomorphology (2021), https://doi.org/10.1016/j.geomorph.2021.107778
 
 ## Contributing
 
