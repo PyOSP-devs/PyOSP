@@ -34,11 +34,3 @@ and installed locally:
     cd pyosp
     conda install --file requirements.txt
     python setup.py install
-
-Testing
--------
-If you want to run the unit tests for PyOSP, please run::
-
-    pytest -v
-
-All tests should pass.
