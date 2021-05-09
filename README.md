@@ -125,7 +125,7 @@ Any contributions you make are **greatly appreciated**.
 
 ## Feedback
 
-- If you think pyosp is useful, consider giving it a start.
+- If you think pyosp is useful, consider giving it a star.
 - If something is not working, [create an issue](https://github.com/pyosp-devs/pyosp/issues/new)
 - If you need to get in touch for other reasons, [send us an email](yichuan211@gmail.com)
 
