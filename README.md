@@ -17,7 +17,7 @@ _Intelligent and comprehensive swath analysis_
 
 ## Features
 
-- :gem: **Intelligent**: objectively identify irregular boundries using elevation, slope, tpi, or other raster analyses.
+- :gem: **Intelligent**: objectively identify irregular boundries using elevation, slope, TPI, or other raster analyses.
 - :milky_way: **Comprehensive**: cuvilinear and circular swath analyses, reclassification of swath data, cross-swath, slice and histogram, etc.  
 - :two_women_holding_hands: **Compatible**: work seamlessly with GIS software.
 - :anchor: **Dependencies**: numpy, matplotlib, gdal, scipy and shapely.
