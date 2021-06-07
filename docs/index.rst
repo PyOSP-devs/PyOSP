@@ -30,6 +30,14 @@ PyOSP supports Python 3.6 or higher, and depends on `Numpy <https://numpy.org/>`
    Density(Heat) scatter plot <notebooks/density_scatter>
    Data reclassification <notebooks/reclass>
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Applications
+
+   Topographic analysis of the Teton Range, Wyoming <notebooks/pyosp_teton>
+   Terrace correlation along Licking River, Kentucky <notebooks/pyosp_licking>
+   Swath analysis of Olympus Mons, Mars <notebooks/pyosp_olympus>
+
 Indices and tables
 ==================
 
