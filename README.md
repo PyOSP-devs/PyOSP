@@ -27,6 +27,11 @@ Read the documentation at: https://pyosp.readthedocs.io/en/latest/index.html
 
 Introduction, methodology, and case studies: https://doi.org/10.1016/j.geomorph.2021.107778
 
+Applications (starting from scratch):
+1. [Topographic analysis of Teton Range, Wyoming](https://pyosp.readthedocs.io/en/latest/notebooks/pyosp_teton.html)
+2. [Terrace correlation along the Licking River, Kentucky](https://pyosp.readthedocs.io/en/latest/notebooks/pyosp_licking.html)
+3. [Circular swath analysis of Olympus Mons, Mars](https://pyosp.readthedocs.io/en/latest/notebooks/pyosp_olympus.html)
+
 ## Installation
 We recommend to use the [conda](https://conda.io/en/latest/) package manager to install pyosp. It will provide pre-built binaries for all dependencies of pyosp. If you have the [miniconda](https://docs.conda.io/en/latest/miniconda.html) (recommend; only containing python and the conda package manager), or [anaconda distribution](https://www.anaconda.com/) (a python distribution with many installed libraries for data science) installed, then simply execute the following command:
 
