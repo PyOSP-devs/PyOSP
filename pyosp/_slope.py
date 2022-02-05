@@ -26,7 +26,7 @@ class Geo_slope:
 
     def raster_window(self):
         py, px = self.point_position()
-        rasterMatrix = self.raster.ReadAsArray()
+        rasterMatrix = self.raster.ReadAsArray().astype(float)
 
         # pad to the edge
         rasterPad = np.pad(rasterMatrix, (1,), "edge")

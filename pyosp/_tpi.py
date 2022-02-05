@@ -36,9 +36,10 @@ class Tpi:
         ymax = min(self.rows, py + self.radiusInPixel + 1)
         arr = self.raster.ReadAsArray(
             xoff=xmin, yoff=ymin, xsize=xmax - xmin, ysize=ymax - ymin
-        )
+        ).astype(float)
         # Treat small values as no data
-        arr[arr < -1e20] = np.nan
+        arr_min = np.min(arr)
+        arr[arr == arr_min] = np.nan
         avg = (np.nansum(arr) - self.point_value()) / (np.sum(~np.isnan(arr)) - 1)
         return avg
 

@@ -95,8 +95,9 @@ ENV/
 .vscode/
 *.d
 
-# paper
+# paper and test
 paper/
+issues/
 
 # example and test
 intro/

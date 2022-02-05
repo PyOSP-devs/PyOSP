@@ -23,4 +23,4 @@ class Point_elevation:
     @property
     def value(self):
         px, py = self.point_position()
-        return self.raster.ReadAsArray(px, py, 1, 1)
+        return self.raster.ReadAsArray(px, py, 1, 1).astype(float)
