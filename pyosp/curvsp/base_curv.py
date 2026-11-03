@@ -83,26 +83,43 @@ class Base_curv:
         """
         pass
 
-    def _segment(self, start=None, end=None):
-        if start is not None and isinstance(start, (int, float)):
-            start_ind = np.abs(self.distance - start).argmin()
-        elif start is not None and len(start) == 2:
-            line_coords = np.asarray(self.line_p)
-            start_coord = np.asarray(start)
-            distance = np.sum((line_coords - start_coord) ** 2, axis=1)
-            start_ind = np.argmin(distance)
-        else:
-            start_ind = start
+    @staticmethod
+    def _left_normal(p1, p2):
+        """Unit vector perpendicular to p1->p2, pointing to its left."""
+        dx = p2[0] - p1[0]
+        dy = p2[1] - p1[1]
+        length = np.hypot(dx, dy)
+        if length == 0:
+            raise ValueError(
+                "Consecutive baseline points {} and {} coincide.".format(p1, p2)
+            )
+        return -dy / length, dx / length
 
-        if end is not None and isinstance(start, (int, float)):
-            end_ind = np.abs(self.distance - end).argmin()
-        elif end is not None and len(end) == 2:
+    def _loc_index(self, loc):
+        """Index of the baseline point nearest to ``loc``.
+
+        ``loc`` is either a distance along the baseline or an (x, y) coordinate.
+        """
+        if np.ndim(loc) == 0:
+            return int(np.abs(self.distance - float(loc)).argmin())
+        if len(loc) == 2:
             line_coords = np.asarray(self.line_p)
-            end_coord = np.asarray(end)
-            distance = np.sum((line_coords - end_coord) ** 2, axis=1)
-            end_ind = np.argmin(distance)
-        else:
-            end_ind = end
+            distance = np.sum((line_coords - np.asarray(loc, dtype=float)) ** 2, axis=1)
+            return int(np.argmin(distance))
+        raise ValueError(
+            "Location should be a distance or an (x, y) coordinate, got {!r}.".format(
+                loc
+            )
+        )
+
+    def _segment(self, start=None, end=None):
+        """Return slice bounds ``[start_ind, end_ind)`` covering start..end.
+
+        ``end_ind`` is one past the transect nearest ``end``, so that the
+        transect at ``end`` is included.
+        """
+        start_ind = None if start is None else self._loc_index(start)
+        end_ind = None if end is None else self._loc_index(end) + 1
 
         return start_ind, end_ind
 
@@ -153,16 +170,17 @@ class Base_curv:
     def swath_data(self):
         """Return a list of elevation data along each profileline"""
         lines_dat = []
-        try:
-            for line in self.lines:
-                points_temp = []
-                for point in line:
-                    rasterVal = Point_elevation(point, self.raster).value[0, 0]
-                    points_temp.append(rasterVal)
+        # Base_curv itself defines no transects
+        if self.lines is None:
+            return lines_dat
 
-                lines_dat.append(points_temp)
-        except TypeError:
-            pass
+        for line in self.lines:
+            points_temp = []
+            for point in line:
+                rasterVal = Point_elevation(point, self.raster).value[0, 0]
+                points_temp.append(rasterVal)
+
+            lines_dat.append(points_temp)
 
         return lines_dat
 
@@ -340,7 +358,7 @@ class Base_curv:
         """
         distance = self.distance
         stat = self.profile_stat(self.dat)
-        self.plot(
+        return self.plot(
             distance=distance,
             stat=stat,
             start=start,
@@ -358,13 +376,7 @@ class Base_curv:
         :type loc: float or array-like.
         :param ax: matplotlib axes, defaults to None
         """
-        if loc is not None and isinstance(loc, (int, float)):
-            loc_ind = np.abs(self.distance - loc).argmin()
-        elif loc is not None and len(loc) == 2:
-            line_coords = np.asarray(self.line_p)
-            loc_coords = np.asarray(loc)
-            distance = np.sum((line_coords - loc_coords) ** 2, axis=1)
-            loc_ind = np.argmin(distance)
+        loc_ind = self._loc_index(loc)
 
         line = self.lines[loc_ind]
 
@@ -424,17 +436,11 @@ class Base_curv:
         :param bins: number of bins, defaults to 50
         :type bins: int, optional
         """
-        if loc is not None and isinstance(loc, (int, float)):
-            loc_ind = np.abs(self.distance - loc).argmin()
-        elif loc is not None and len(loc) == 2:
-            line_coords = np.asarray(self.line_p)
-            loc_coords = np.asarray(loc)
-            distance = np.sum((line_coords - loc_coords) ** 2, axis=1)
-            loc_ind = np.argmin(distance)
+        loc_ind = self._loc_index(loc)
 
         dat = self.dat[loc_ind]
 
-        self.hist(dat=dat, bins=bins)
+        return self.hist(dat=dat, bins=bins)
 
     def cross_dat(self, dat=None, start=None, end=None):
         """Generate cross-swath data.
@@ -522,11 +528,11 @@ class Base_curv:
         end = None
 
         if density_scatter is True:
-            self.density_scatter(
+            return self.density_scatter(
                 distance=distance, dat=cross, start=start, end=end, ax=ax, **kwargs
             )
         else:
-            self.plot(
+            return self.plot(
                 distance=distance,
                 stat=cross_stat,
                 start=start,
@@ -705,9 +711,9 @@ class Base_curv:
     ):
         """Post-processing swath data according to slope criteria.
 
-        :param min_val: minimal slope threshold, defaults to float("-inf")
+        :param min_val: minimal slope threshold in degrees, defaults to 0
         :type min_val: float, optional
-        :param max_val: maximal slope threshold, defaults to float("inf")
+        :param max_val: maximal slope threshold in degrees, defaults to 90
         :type max_val: float, optional
         :param start: starting point, can be coordinates or distance
         :type start: float or array-like, optional

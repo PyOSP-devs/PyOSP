@@ -2,10 +2,18 @@
 
 import numpy as np
 
+from ._elevation import _pixel_index
+
+__all__ = ["Tpi"]
+
 
 class Tpi:
     def __init__(self, point_coord, raster, radius):
-        """Calculate the TPI value of the point
+        """Calculate the TPI value of the point.
+
+        TPI is the point value minus the mean of the other valid cells in a
+        square window of half-width ``radius`` around it. NoData cells are
+        excluded. Points outside the raster or on NoData return NaN.
 
         :param point_coord: point coodinates
         :type point_coord: array-like
@@ -20,32 +28,52 @@ class Tpi:
         self.rows = raster.RasterYSize
         self.geoTransform = raster.GetGeoTransform()
         self.radiusInPixel = int(radius / self.geoTransform[1])
+        self.band = raster.GetRasterBand(1)
+        self.nodata = self.band.GetNoDataValue()
 
     def point_position(self):
         " Define the point position on the raster"
-        x = int((self.p[0] - self.geoTransform[0]) / self.geoTransform[1])
-        y = int((self.geoTransform[3] - self.p[1]) / -self.geoTransform[5])
+        x, y = _pixel_index(self.p, self.geoTransform)
         return y, x
+
+    def _inside(self):
+        py, px = self.point_position()
+        return 0 <= px < self.cols and 0 <= py < self.rows
+
+    def _mask_nodata(self, arr):
+        arr = arr.astype(float)
+        if self.nodata is not None:
+            arr[arr == self.nodata] = np.nan
+        return arr
 
     def avg_window(self):
         "Calculate the average raster value within the window, exclude the central point."
+        if not self._inside():
+            return np.nan
         py, px = self.point_position()
         xmin = max(0, px - self.radiusInPixel)
         xmax = min(self.cols, px + self.radiusInPixel + 1)
         ymin = max(0, py - self.radiusInPixel)
         ymax = min(self.rows, py + self.radiusInPixel + 1)
-        arr = self.raster.ReadAsArray(
-            xoff=xmin, yoff=ymin, xsize=xmax - xmin, ysize=ymax - ymin
-        ).astype(float)
-        # Treat small values as no data
-        arr_min = np.min(arr)
-        arr[arr == arr_min] = np.nan
-        avg = (np.nansum(arr) - self.point_value()) / (np.sum(~np.isnan(arr)) - 1)
-        return avg
+        arr = self._mask_nodata(
+            self.band.ReadAsArray(
+                xoff=xmin, yoff=ymin, win_xsize=xmax - xmin, win_ysize=ymax - ymin
+            )
+        )
+        # exclude the central cell
+        arr[py - ymin, px - xmin] = np.nan
+        n = np.sum(~np.isnan(arr))
+        if n == 0:
+            return np.nan
+        return np.nansum(arr) / n
 
     def point_value(self):
+        if not self._inside():
+            return np.array([np.nan])
         py, px = self.point_position()
-        return self.raster.ReadAsArray(xoff=px, yoff=py, xsize=1, ysize=1)[0]
+        return self._mask_nodata(
+            self.band.ReadAsArray(xoff=px, yoff=py, win_xsize=1, win_ysize=1)[0]
+        )
 
     @property
     def value(self):

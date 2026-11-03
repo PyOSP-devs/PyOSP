@@ -46,8 +46,8 @@ class Orig_cir(Base_cir):
         return "{}".format(self.__class__.__name__)
 
     def _radial_lines(self):
-        num = (self.ng_end - self.ng_start) // self.ng_stepsize
-        sector = list(np.arange(self.ng_start, self.ng_end + 0.00001, self.ng_stepsize))
+        sector = self._sector()
+        num = len(sector)
         radial_line = list(np.arange(0.0, self.radius + 0.00001, self.radial_stepsize))
 
         lines = []
@@ -71,7 +71,7 @@ class Orig_cir(Base_cir):
 
             lines.append(line_temp)
 
-            current = sector.index(ng)
+            current = sector.index(ng) + 1
             progressBar(current, num)
 
         return lines

@@ -55,8 +55,8 @@ class Tpi_cir(Base_cir):
         return "{}".format(self.__class__.__name__)
 
     def _radial_lines(self):
-        num = (self.ng_end - self.ng_start) // self.ng_stepsize
-        sector = list(np.arange(self.ng_start, self.ng_end + 0.00001, self.ng_stepsize))
+        sector = self._sector()
+        num = len(sector)
         radial_line = list(np.arange(0.0, self.radius + 0.00001, self.radial_stepsize))
 
         lines = []
@@ -84,6 +84,12 @@ class Tpi_cir(Base_cir):
                 line_elev.append(p_elev)
                 line_tpi.append(p_tpi)
 
+            if not line_elev:
+                raise ValueError(
+                    "No valid raster data along the {} degree ray; "
+                    "check that the center lies inside the raster.".format(ng)
+                )
+
             # find the maximum elevation point of the line
             max_ind = line_elev.index(max(line_elev))
 
@@ -97,12 +103,19 @@ class Tpi_cir(Base_cir):
                     "allowed minimum TPI is too big " "or radius is too small"
                 )
             else:
-                for i in range(max_ind, len(line_elev)):
-                    if line_tpi[i] < self.min_tpi:
-                        lines.append(line_temp[0:i])
-                        break
+                # cut at the first value below the threshold beyond the rim;
+                # keep the whole line if none is below (values equal to it)
+                cut = next(
+                    (
+                        i
+                        for i in range(max_ind, len(line_tpi))
+                        if line_tpi[i] < self.min_tpi
+                    ),
+                    len(line_tpi),
+                )
+                lines.append(line_temp[0:cut])
 
-            current = sector.index(ng)
+            current = sector.index(ng) + 1
             progressBar(current, num)
 
         return lines
