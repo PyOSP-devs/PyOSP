@@ -78,19 +78,10 @@ class Orig_curv(Base_curv):
         else:
             transect_temp = [p_m]
             nPoints = int(self.width / 2 // self.cross_stepsize)
-            slope = -(p2[0] - p1[0]) / (p2[1] - p1[1])
+            nx, ny = self._left_normal(p1, p2)
             for i in range(nPoints):
-                dx = np.sqrt((self.cross_stepsize * (i + 1)) ** 2 / (slope ** 2 + 1))
-                dy = dx * abs(slope)
-
-                if slope >= 0 and p2[0] < p1[0] and p2[1] >= p1[1]:
-                    p_left = [p_m[0] - dx, p_m[1] - dy]
-                elif slope >= 0 and p2[0] >= p1[0] and p2[1] < p1[1]:
-                    p_left = [p_m[0] + dx, p_m[1] + dy]
-                elif slope < 0 and p2[0] < p1[0] and p2[1] < p1[1]:
-                    p_left = [p_m[0] + dx, p_m[1] - dy]
-                elif slope < 0 and p2[0] >= p1[0] and p2[1] >= p1[1]:
-                    p_left = [p_m[0] - dx, p_m[1] + dy]
+                d = self.cross_stepsize * (i + 1)
+                p_left = [p_m[0] + d * nx, p_m[1] + d * ny]
 
                 # discard point out of bounds
                 rasterVal = Point_elevation(p_left, self.raster).value
@@ -115,19 +106,10 @@ class Orig_curv(Base_curv):
         transect_temp = []
 
         nPoints = int(self.width / 2 // self.cross_stepsize)
-        slope = -(p2[0] - p1[0]) / (p2[1] - p1[1])
+        nx, ny = self._left_normal(p1, p2)
         for i in range(nPoints):
-            dx = np.sqrt((self.cross_stepsize * (i + 1)) ** 2 / (slope ** 2 + 1))
-            dy = dx * abs(slope)
-
-            if slope >= 0 and p2[0] < p1[0] and p2[1] >= p1[1]:
-                p_right = [p_m[0] + dx, p_m[1] + dy]
-            elif slope >= 0 and p2[0] >= p1[0] and p2[1] < p1[1]:
-                p_right = [p_m[0] - dx, p_m[1] - dy]
-            elif slope < 0 and p2[0] < p1[0] and p2[1] < p1[1]:
-                p_right = [p_m[0] - dx, p_m[1] + dy]
-            elif slope < 0 and p2[0] >= p1[0] and p2[1] >= p1[1]:
-                p_right = [p_m[0] + dx, p_m[1] - dy]
+            d = self.cross_stepsize * (i + 1)
+            p_right = [p_m[0] - d * nx, p_m[1] - d * ny]
 
             # discard point out of bounds
             rasterVal = Point_elevation(p_right, self.raster).value

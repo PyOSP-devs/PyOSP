@@ -28,8 +28,10 @@ class TestPost:
         orig = orig_homo()
         polylines = orig.out_polylines(start=coords[1], end=coords[0])
         lineBounds = polylines.bounds
-        assert 72.595 == pytest.approx(lineBounds[0], 0.001)
-        assert 134.606 == pytest.approx(lineBounds[3], 0.001)
+        # the transect at `end` is included (it used to be dropped,
+        # which gave 72.595 and 134.606)
+        assert 72.0436 == pytest.approx(lineBounds[0], 0.001)
+        assert 135.1857 == pytest.approx(lineBounds[3], 0.001)
 
     def test_profile_plot(self, orig_homo):
         start_end = os.path.join(dat, "homo_start_end.shp")

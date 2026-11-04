@@ -87,6 +87,27 @@ class Base_cir:
         """
         pass
 
+    def _sector(self):
+        """Angles (degrees) of the radial lines.
+
+        For a full circle the end angle is dropped, because it is the same
+        ray as the start angle and would otherwise be sampled twice.
+        """
+        sector = np.arange(self.ng_start, self.ng_end + 0.00001, self.ng_stepsize)
+        if len(sector) > 1 and np.isclose(sector[-1] - sector[0], 360.0):
+            sector = sector[:-1]
+        return list(sector)
+
+    def _angle_index(self, angle):
+        """Index of the radial line nearest to ``angle`` (degrees)."""
+        if not self.ng_start <= angle <= self.ng_end:
+            raise ValueError("angle should be between ng_start and ng_end.")
+
+        sector = np.asarray(self._sector())
+        # angular distance, so that 360 maps to the 0 degree ray
+        diff = (sector - angle + 180.0) % 360.0 - 180.0
+        return int(np.abs(diff).argmin())
+
     def out_polygon(self):
         "Return a shapely polygon object"
         try:
@@ -160,9 +181,7 @@ class Base_cir:
         return [min_z, max_z, mean_z, q1, q3]
 
     def profile_plot(self, ax=None, color="navy", p_coords=None, **kwargs):
-        d = np.linspace(
-            0, self.radial_stepsize * self.dat_steps, self.dat_steps, endpoint=True
-        )
+        d = np.arange(self.dat_steps) * self.radial_stepsize
         stat = self.profile_stat()
 
         if ax is None:
@@ -199,11 +218,7 @@ class Base_cir:
         :param angle: the angle of cross-section wrt horizontal line
         :type angle: int
         """
-        if not self.ng_start <= angle <= self.ng_end:
-            raise ValueError("angle should be between ng_start and ng_end.")
-
-        sector = np.arange(self.ng_start, self.ng_end + 1e-10, self.ng_stepsize)
-        ng_ind = np.abs(sector - angle).argmin()
+        ng_ind = self._angle_index(angle)
         points = self.lines[ng_ind]
         values = self.dat[ng_ind]
         values = values[~np.isnan(values)]
@@ -232,11 +247,7 @@ class Base_cir:
         :type angle: int
         :return: a shapely polyline object
         """
-        if not self.ng_start <= angle <= self.ng_end:
-            raise Exception("angle should be between ng_start and ng_end.")
-
-        sector = np.arange(self.ng_start, self.ng_end + 1e-10, self.ng_stepsize)
-        ng_ind = np.abs(sector - angle).argmin()
+        ng_ind = self._angle_index(angle)
         points = self.lines[ng_ind]
         line = list((points[0], points[-1]))
 
@@ -264,11 +275,7 @@ class Base_cir:
         :param bins: number of bins, defaults to 10
         :type bins: int, optional
         """
-        if not self.ng_start <= angle <= self.ng_end:
-            raise ValueError("angle should be between ng_start and ng_end.")
-
-        sector = np.arange(self.ng_start, self.ng_end + 1e-10, self.ng_stepsize)
-        ng_ind = np.abs(sector - angle).argmin()
+        ng_ind = self._angle_index(angle)
         dat = self.dat[ng_ind]
 
         if ax is None:
